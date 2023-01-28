@@ -4,6 +4,18 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
+--[ References ]--
+
+local OriginalUIErrorsFrame_OnEvent;
+
+--[ Settings ]--
+ColdEmbraceVariables = {};
+CEV = { }; -- global alias
+local DCEV = { -- Default values
+    RollFrame = 1,
+}
+
+local me = UnitName('player')
 
 function ColdEmbrace_OnLoad()
 	this:RegisterEvent("CHAT_MSG_SYSTEM");
@@ -13,6 +25,15 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEZ1 = "/ce";
 	SLASH_CEZ2 = "/coldembrace";
 	SlashCmdList["CEZ"] = ColdEmbrace_Help;
+
+	SLASH_CEX1 = "/frames";
+	SLASH_CEX2 = "/rollframes";
+	SLASH_CEX3 = "/togglerollframes";
+	SlashCmdList["CEX"] = CE_RollFramesToggle;
+	
+	SLASH_CEY1 = "/clearce";
+	SLASH_CEY2 = "/clearframes";
+	SlashCmdList["CEY"] = CE_ClearFrames;
 
 	SLASH_CEA1 = "/rms";
 	SLASH_CEA2 = "/rollms";
@@ -57,6 +78,8 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/clearce or /clearframes - Clears roll window.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Requires Raid Lead/Assist and/or a Guild Officer rank:",0,1,0);
@@ -107,37 +130,56 @@ function ColdEmbrace_OnEvent()
 				--SendChatMessage("GroupLoot activated", "OFFICER"); 
 			end
 		end
-	
 	elseif event == "CHAT_MSG_RAID_WARNING" then
 		if strfind(arg1, "\124", 1) then
 		itemLink = arg1
-
-			ItemFrameCE = CreateFrame("Button", nil, UIParent)
-			ItemFrameCE:ClearAllPoints()
-			ItemFrameCE:SetWidth(450)
-			ItemFrameCE:SetHeight(32)
-			ItemFrameCE:SetPoint("CENTER", 195, 85)
-			ItemFrameCE.text = ItemFrameCE:CreateFontString("Status", "LOW", "GameFontNormal")
-			ItemFrameCE.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-			ItemFrameCE.text:ClearAllPoints()
-			ItemFrameCE.text:SetAllPoints(ItemFrameCE)
-			ItemFrameCE.text:SetPoint("CENTER", 0, 0)
-			ItemFrameCE.text:SetFontObject(GameFontWhite)
-			ItemFrameCE:SetScript("OnUpdate", function()
-			this.text:SetText(itemLink)
-			end)
-
-
-
-			--SendChatMessage(arg1, "RAID");  
-			CE_NeedFrame()
-			CE_GreedFrame()
-			CE_PassFrame()
-			ColdEmbraceMS:Show(); 
-			ColdEmbraceOS:Show();
-			ColdEmbracePS:Show();
+			if ColdEmbraceVariables.RollFrame > 0 then
+				CE_ItemFrame();
+				CE_NeedFrame(); ColdEmbraceMS:Show(); 
+				CE_GreedFrame(); ColdEmbraceOS:Show();
+				CE_PassFrame(); ColdEmbracePS:Show();
+			end
+			
+		elseif strfind(arg1, "awarded", 1) then
+			CE_ClearFrames()
 		end
 	end
+end
+
+function CE_RollFramesToggle()
+	if ColdEmbraceVariables.RollFrame < 1 then 
+		ColdEmbraceVariables.RollFrame = 1
+		DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
+	else
+		ColdEmbraceVariables.RollFrame = 0
+		DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
+	end
+	return
+end
+
+function CE_ClearFrames()
+	DEFAULT_CHAT_FRAME:AddMessage("Roll frames cleared",0,1,0);
+	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
+	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
+	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
+	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+end
+
+function CE_ItemFrame()
+	ItemFrameCE = CreateFrame("Button", nil, UIParent)
+	ItemFrameCE:ClearAllPoints()
+	ItemFrameCE:SetWidth(450)
+	ItemFrameCE:SetHeight(32)
+	ItemFrameCE:SetPoint("CENTER", 195, 85)
+	ItemFrameCE.text = ItemFrameCE:CreateFontString("Status", "LOW", "GameFontNormal")
+	ItemFrameCE.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+	ItemFrameCE.text:ClearAllPoints()
+	ItemFrameCE.text:SetAllPoints(ItemFrameCE)
+	ItemFrameCE.text:SetPoint("CENTER", 0, 0)
+	ItemFrameCE.text:SetFontObject(GameFontWhite)
+	ItemFrameCE:SetScript("OnUpdate", function()
+	this.text:SetText(itemLink)
+	end)
 end
 
 function CE_NeedFrame()

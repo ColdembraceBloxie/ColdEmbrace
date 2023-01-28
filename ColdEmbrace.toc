@@ -3,4 +3,7 @@
 ## Title: ColdEmbrace
 ## Author: Sebben/Anachrony
 ## Notes:
+## SavedVariables: 
+## SavedVariablesPerCharacter: ColdEmbraceVariables
+
 ColdEmbrace.xml
