@@ -1,0 +1,106 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Script file="ColdEmbrace.lua"/>
+	<Frame name="ColdEmbrace" parent="UIParent" enableMouse="true" hidden="false" frameStrata="LOW">
+		<Size>
+			<AbsDimension x="64" y="64"/>
+		</Size>
+		<Anchors>
+            <Anchor point="CENTER">
+                <Offset>
+                    <AbsDimension x="0" y="0"/>
+                </Offset>
+            </Anchor>
+        </Anchors>
+		<Frames>
+			
+
+			<Button name="ColdEmbraceMS">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="150" y="50"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture>
+				</NormalTexture>
+				<PushedTexture>
+				</PushedTexture>
+				<Scripts>
+					<OnClick>
+						ColdEmbrace_OnClickMS();
+						ColdEmbraceMS:Hide(); 
+						ColdEmbraceOS:Hide();
+						ColdEmbracePS:Hide(); 
+					</OnClick>
+				</Scripts>
+			</Button>
+			
+			<Button name="ColdEmbraceOS">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="200" y="50"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture>
+				</NormalTexture>
+				<PushedTexture>
+				</PushedTexture>
+				<Scripts>
+					<OnClick>
+						ColdEmbrace_OnClickOS();
+						ColdEmbraceMS:Hide(); 
+						ColdEmbraceOS:Hide();
+						ColdEmbracePS:Hide(); 
+					</OnClick>
+				</Scripts>
+			</Button>
+
+			<Button name="ColdEmbracePS">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="250" y="50"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture>
+				</NormalTexture>
+				<PushedTexture>
+				</PushedTexture>
+				<Scripts>
+					<OnClick>
+						ColdEmbrace_OnClickPS();
+						ColdEmbraceMS:Hide(); 
+						ColdEmbraceOS:Hide();
+						ColdEmbracePS:Hide();
+					</OnClick>
+				</Scripts>
+			</Button>
+
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				ColdEmbrace_OnLoad();
+				ColdEmbraceMS:Hide(); 
+				ColdEmbraceOS:Hide();
+				ColdEmbracePS:Hide(); 
+			</OnLoad>
+			<OnEvent>
+				ColdEmbrace_OnEvent();
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

@@ -1,0 +1,6 @@
+## Version: 0.69
+## Interface: 11200
+## Title: ColdEmbrace
+## Author: Sebben/Anachrony
+## Notes:
+ColdEmbrace.xml
