@@ -157,9 +157,9 @@ end
 function CE_ClearFrames()
 	--DEFAULT_CHAT_FRAME:AddMessage("Roll frames cleared",0,1,0);
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
-	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
-	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
-	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); ColdEmbraceMS:Hide(); end
+	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); ColdEmbraceOS:Hide(); end
+	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); ColdEmbracePS:Hide(); end
 end
 
 function CE_RollFramesToggle()
