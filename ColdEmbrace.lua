@@ -79,7 +79,7 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/clearce or /clearframes - Clears roll window.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
+	--DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Requires Raid Lead/Assist and/or a Guild Officer rank:",0,1,0);
@@ -131,14 +131,13 @@ function ColdEmbrace_OnEvent()
 			end
 		end
 	elseif event == "CHAT_MSG_RAID_WARNING" then
-		if strfind(arg1, "\124", 1) then
+		if strfind(arg1, "CE_Roll:", 1) then
 		itemLink = arg1
-			if ColdEmbraceVariables.RollFrame > 0 then
-				CE_ItemFrame();
-				CE_NeedFrame(); ColdEmbraceMS:Show(); 
-				CE_GreedFrame(); ColdEmbraceOS:Show();
-				CE_PassFrame(); ColdEmbracePS:Show();
-			end
+
+
+			Chronos.scheduleByName("Clear", 0.1, CE_ClearFrames);
+			Chronos.scheduleByName("Draw", 0.2, CE_DrawFrames);
+			Chronos.scheduleByName("Erase", 30, CE_ClearFrames);
 			
 		elseif strfind(arg1, "awarded", 1) then
 			CE_ClearFrames()
@@ -146,23 +145,32 @@ function ColdEmbrace_OnEvent()
 	end
 end
 
-function CE_RollFramesToggle()
-	if ColdEmbraceVariables.RollFrame < 1 then 
-		ColdEmbraceVariables.RollFrame = 1
-		DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
-	else
-		ColdEmbraceVariables.RollFrame = 0
-		DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
-	end
-	return
+function CE_DrawFrames()
+	--if ColdEmbraceVariables.RollFrame > 0 then
+		CE_ItemFrame();
+		CE_NeedFrame(); ColdEmbraceMS:Show(); 
+		CE_GreedFrame(); ColdEmbraceOS:Show();
+		CE_PassFrame(); ColdEmbracePS:Show();
+	--end
 end
 
 function CE_ClearFrames()
-	DEFAULT_CHAT_FRAME:AddMessage("Roll frames cleared",0,1,0);
+	--DEFAULT_CHAT_FRAME:AddMessage("Roll frames cleared",0,1,0);
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+end
+
+function CE_RollFramesToggle()
+	if ColdEmbraceVariables.RollFrame < 1 then 
+		ColdEmbraceVariables.RollFrame = 1
+		--DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
+	else
+		ColdEmbraceVariables.RollFrame = 0
+		--DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
+	end
+	return
 end
 
 function CE_ItemFrame()
@@ -179,6 +187,7 @@ function CE_ItemFrame()
 	ItemFrameCE.text:SetFontObject(GameFontWhite)
 	ItemFrameCE:SetScript("OnUpdate", function()
 	this.text:SetText(itemLink)
+	--ItemFrameCE:Show()
 	end)
 end
 
@@ -257,15 +266,19 @@ function ColdEmbrace_MainSpecRoll()
 	guild = ("Cold Embrace");
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
 	playerName = UnitName("Player");
-	for i = 1,250 do
-		name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-		playerName = UnitName("Player");
-		if name == playerName and guildName == guild then
-			if officernote == ("") then RandomRoll(0,99);
-			else
-				RandomRoll(officernote+0,(officernote/2)+100);
+	if guildName == guild then
+		for i = 1,250 do
+			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
+			playerName = UnitName("Player");
+			if name == playerName then
+				if officernote == ("") then RandomRoll(0,99);
+				else
+					RandomRoll(officernote+0,(officernote/2)+100);
+				end
 			end
 		end
+	else 
+		RandomRoll(1,100);
 	end
 end
 

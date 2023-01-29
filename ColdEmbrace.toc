@@ -6,4 +6,14 @@
 ## SavedVariables: 
 ## SavedVariablesPerCharacter: ColdEmbraceVariables
 
+libs\Chronos\Chronos.lua
+libs\Chronos\Chronos.xml
+libs\Chronos\Chronos.toc
+libs\Chronos\localization.en.lua
+libs\Chronos\localization.fr.lua
+libs\Chronos\localization.de.lua
+libs\Chronos\localization.lua
+
+
+
 ColdEmbrace.xml
