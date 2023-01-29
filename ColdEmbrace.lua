@@ -31,7 +31,7 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEX3 = "/togglerollframes";
 	SlashCmdList["CEX"] = CE_RollFramesToggle;
 	
-	SLASH_CEY1 = "/clearce";
+	SLASH_CEY1 = "/ceclear";
 	SLASH_CEY2 = "/clearframes";
 	SlashCmdList["CEY"] = CE_ClearFrames;
 
