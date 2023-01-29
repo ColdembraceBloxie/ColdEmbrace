@@ -78,7 +78,7 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/clearce or /clearframes - Clears roll window.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/ceclear or /clearframes - Clears roll window.",1,1,1);
 	--DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
@@ -324,19 +324,25 @@ function ColdEmbrace_GroupLoot()
 end
 
 function ColdEmbrace_RaidInvites()	
+
+	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
+	if GetNumRaidMembers() >= 0 then SendChatMessage("Write + for invite", "GUILD"); end
+	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
+
+	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
+end
+
+function ColdEmbrace_SearchInvite()
 	guild = ("Cold Embrace");
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
 	playerName = UnitName("Player");
 	if guildRankIndex <= 3 then
 		for i = 1,250 do
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			if rankIndex <= 6 and online == 1 then
+			if rankIndex <= 7 and online == 1 then
 				InviteByName(name);
 			end
 		end
-		if GetNumRaidMembers()  < 5 then SendChatMessage("Raid invites starting !", "GUILD"); end
-		if GetNumRaidMembers()  > 0 then SendChatMessage("Write + for raid invite", "GUILD"); end
-		if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("Your rank is not high enough to do that.");
 	end
