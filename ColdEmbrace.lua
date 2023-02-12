@@ -10,8 +10,8 @@ local OriginalUIErrorsFrame_OnEvent;
 
 --[ Settings ]--
 ColdEmbraceVariables = {};
-CEV = { }; -- global alias
-local DCEV = { -- Default values
+CEV = { };
+local DCEV = {
     RollFrame = 1,
 }
 
@@ -69,6 +69,16 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEH2 = "/resetinstance";
 	SLASH_CEH3 = "/resetinstances";
 	SlashCmdList["CEH"] = ResetInstances;
+
+	SLASH_CEI1 = "/advertise";
+	SlashCmdList["CEI"] = ColdEmbraceAdvertise;
+
+	SLASH_CEJ1 = "/attackstart";
+	SlashCmdList["CEJ"] = ColdEmbraceAttackStart;
+
+	SLASH_CEK1 = "/attackstop";
+	SlashCmdList["CEK"] = ColdEmbraceAttackStop;
+
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -79,10 +89,12 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/ceclear or /clearframes - Clears roll window.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/ceclear or /clearframes - Clears all visible frames.",1,1,1);
 	--DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/advertise - Will post basic guild add in world chat (type /join world).",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/attackstart and /attackstop - spammable start/stop attacking command (requires Attack from spellbook General tab to be ANYWHERE on the action bar):",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Requires Raid Lead/Assist and/or a Guild Officer rank:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/inviteraid - Start raid invites.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rc or /readycheck - Start a Ready Check.",1,1,1);
@@ -147,6 +159,9 @@ function ColdEmbrace_OnEvent()
 	end
 end
 
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
 function CE_AutoRoll(id)
 	local  inInstance, instanceType = IsInInstance()
 	notInInstance   = (instanceType == 'none');
@@ -180,6 +195,9 @@ function CE_AutoRoll(id)
 		end
 	end	
 end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 
 function CE_DrawFrames()
 	--if ColdEmbraceVariables.RollFrame > 0 then
@@ -322,6 +340,9 @@ function ColdEmbrace_OffSpecRoll()
 	RandomRoll(1,69);
 end
 
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
 function ColdEmbrace_ReadyCheck()
 	isLeader  = IsRaidLeader();
 	isOfficer = IsRaidOfficer();
@@ -359,6 +380,9 @@ function ColdEmbrace_GroupLoot()
 	end
 end
 
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
 function ColdEmbrace_RaidInvites()	
 
 	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
@@ -386,3 +410,42 @@ end
 
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
+
+function ColdEmbraceAttackStart()
+	if not UnitIsDeadOrGhost("Target") then 
+		if not AttackFound then
+			for i = 1,72 do 
+				if IsAttackAction(i) then 
+					AttackFound = i; 
+				end; 
+			end; 
+		end; 
+		if AttackFound then
+			if not IsCurrentAction(AttackFound) then UseAction(AttackFound); 
+			end
+		end
+	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
+end
+
+function ColdEmbraceAttackStop()
+	if not UnitIsDeadOrGhost("Target") then 
+		if not AttackFound then
+			for i = 1,72 do 
+				if IsAttackAction(i) then 
+					AttackFound = i; 
+				end; 
+			end; 
+		end; 
+		if AttackFound then
+			if IsCurrentAction(AttackFound) then UseAction(AttackFound); 
+			end
+		end
+	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
+end
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function ColdEmbraceAdvertise()
+	id, name = GetChannelName("World");
+	SendChatMessage("Cold Embrace (EU) - Looking for more players to join our guild. We offer casual raid environment and a friendly guild atmosphere. Whisper for more info." ,"CHANNEL" ,nil ,id);
+end
