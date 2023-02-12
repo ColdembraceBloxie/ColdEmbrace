@@ -21,6 +21,7 @@ function ColdEmbrace_OnLoad()
 	this:RegisterEvent("CHAT_MSG_SYSTEM");
 	this:RegisterEvent("CHAT_MSG_OFFICER");
 	this:RegisterEvent("CHAT_MSG_RAID_WARNING");
+	this:RegisterEvent("START_LOOT_ROLL");
 
 	SLASH_CEZ1 = "/ce";
 	SLASH_CEZ2 = "/coldembrace";
@@ -134,7 +135,6 @@ function ColdEmbrace_OnEvent()
 		if strfind(arg1, "CE_Roll:", 1) then
 		itemLink = arg1
 
-
 			Chronos.scheduleByName("Clear", 0.1, CE_ClearFrames);
 			Chronos.scheduleByName("Draw", 0.2, CE_DrawFrames);
 			Chronos.scheduleByName("Erase", 30, CE_ClearFrames);
@@ -142,7 +142,43 @@ function ColdEmbrace_OnEvent()
 		elseif strfind(arg1, "awarded", 1) then
 			CE_ClearFrames()
 		end
+	elseif event == "START_LOOT_ROLL" then
+		CE_AutoRoll(arg1)
 	end
+end
+
+function CE_AutoRoll(id)
+	local  inInstance, instanceType = IsInInstance()
+	notInInstance   = (instanceType == 'none');
+	inPartyInstance = (instanceType == 'party');
+	inRaidInstance  = (instanceType == 'raid');
+	inArenaInstance = (instanceType == 'arena');
+	inPvPInstance   = (instanceType == 'pvp');
+	isLeader = IsRaidLeader() 
+	RollReturn = function()
+		local txt = ""
+		if isLeader then
+			txt = "NEED"
+		elseif not isLeader then
+			txt = "PASS"
+		end
+		return txt
+	end
+	if inRaidInstance then	
+		local _, name, _, quality = GetLootRollItemInfo(id);
+		if string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
+			if isLeader then RollOnLoot(id, 1); end
+			if not isLeader then RollOnLoot(id, 0); end
+			local _, _, _, hex = GetItemQualityColor(quality)
+			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+			return
+		elseif string.find(name ,"Hakkari Bijou") or string.find(name ,"Coin") then
+			RollOnLoot(id, 1);
+			local _, _, _, hex = GetItemQualityColor(quality)
+			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto NEED "..hex..GetLootRollItemLink(id))
+			return
+		end
+	end	
 end
 
 function CE_DrawFrames()
