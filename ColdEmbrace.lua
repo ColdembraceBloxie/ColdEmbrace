@@ -107,7 +107,7 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("/rc or /readycheck - Start a Ready Check.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ml or /master or /masterloot - Change loot method to Master Loot.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/gl or /group or /grouploot - Change loot method to Group Loot.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("Please report any bugs or problems caused by this addon to Sebben/Perihelion.",1,1,0);
+	DEFAULT_CHAT_FRAME:AddMessage("Please report any bugs or problems caused by this addon to your guild leader.",1,1,0);
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -193,6 +193,41 @@ function CE_LogoutRaid()
 	SendChatMessage("Everyone LOGOUT!", "RAID_WARNING");
 end
 
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function ColdEmbraceAdvertise()
+	id, name = GetChannelName("World");
+	SendChatMessage("Cold Embrace (EU) - Looking for more players to join our guild. We offer casual raid environment and a friendly guild atmosphere. Whisper for more info." ,"CHANNEL" ,nil ,id);
+end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function ColdEmbrace_MainSpecRoll()		
+	guild = ("Cold Embrace");
+	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
+	playerName = UnitName("Player");
+	if guildName == guild then
+		for i = 1,250 do
+			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
+			playerName = UnitName("Player");
+			if name == playerName then
+				if officernote == ("") then RandomRoll(0,99);
+				else
+					RandomRoll(officernote*0.75,officernote*0.25+100);
+				end
+			end
+		end
+	else 
+		RandomRoll(1,100);
+	end
+end
+
+function ColdEmbrace_OffSpecRoll()
+	RandomRoll(1,69);
+end
+
 function CE_AutoRoll(id)
 	local  inInstance, instanceType = IsInInstance()
 	notInInstance   = (instanceType == 'none');
@@ -212,7 +247,7 @@ function CE_AutoRoll(id)
 	end
 	if inRaidInstance then	
 		local _, name, _, quality = GetLootRollItemInfo(id);
-		if string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
+		if string.find(name ,"Elementium Ore") or string.find(name ,"Hourglass Sand") or string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
 			if isLeader then RollOnLoot(id, 1); end
 			if not isLeader then RollOnLoot(id, 0); end
 			local _, _, _, hex = GetItemQualityColor(quality)
@@ -225,6 +260,109 @@ function CE_AutoRoll(id)
 			return
 		end
 	end	
+end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function ColdEmbrace_ReadyCheck()
+	isLeader  = IsRaidLeader();
+	isOfficer = IsRaidOfficer();
+	if isLeader then
+		DoReadyCheck();
+	elseif isOfficer then 
+		SendChatMessage("Please do a Ready Check", "OFFICER"); 
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant.");
+	end
+end
+
+function ColdEmbrace_MasterLoot()
+	isLeader  = IsRaidLeader();
+	isOfficer = IsRaidOfficer(); 
+	playerName = UnitName("Player");
+	lootmethod = GetLootMethod();
+	if lootmethod == ("master") then DEFAULT_CHAT_FRAME:AddMessage("Master Looter already set."); 
+	elseif lootmethod == ("group") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
+		if isLeader then SetLootMethod("master", playerName);
+		elseif isOfficer then SendChatMessage("Please change to Master Loot", "OFFICER"); 
+		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
+	end
+end
+
+function ColdEmbrace_GroupLoot()
+	isLeader  = IsRaidLeader();
+	isOfficer = IsRaidOfficer(); 
+	lootmethod = GetLootMethod();
+	if lootmethod == ("group") then DEFAULT_CHAT_FRAME:AddMessage("Group Loot already set.");
+	elseif lootmethod == ("master") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
+		if isLeader then SetLootMethod("group");
+		elseif isOfficer then SendChatMessage("Please change to Group Loot", "OFFICER");
+		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
+	end
+end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function ColdEmbrace_RaidInvites()	
+
+	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
+	if GetNumRaidMembers() >= 0 then SendChatMessage("Write + for invite", "GUILD"); end
+	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
+
+	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
+end
+
+function ColdEmbrace_SearchInvite()
+	guild = ("Cold Embrace");
+	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
+	playerName = UnitName("Player");
+	if guildRankIndex <= 3 then
+		for i = 1,250 do
+			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
+			if rankIndex <= 7 and online == 1 then
+				InviteByName(name);
+			end
+		end
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("Your rank is not high enough to do that.");
+	end
+end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function ColdEmbraceAttackStart()
+	if not UnitIsDeadOrGhost("Target") then 
+		if not AttackFound then
+			for i = 1,72 do 
+				if IsAttackAction(i) then 
+					AttackFound = i; 
+				end; 
+			end; 
+		end; 
+		if AttackFound then
+			if not IsCurrentAction(AttackFound) then UseAction(AttackFound); 
+			end
+		end
+	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
+end
+
+function ColdEmbraceAttackStop()
+	if not UnitIsDeadOrGhost("Target") then 
+		if not AttackFound then
+			for i = 1,72 do 
+				if IsAttackAction(i) then 
+					AttackFound = i; 
+				end; 
+			end; 
+		end; 
+		if AttackFound then
+			if IsCurrentAction(AttackFound) then UseAction(AttackFound); 
+			end
+		end
+	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -342,141 +480,4 @@ function ColdEmbrace_OnClickPS()
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbrace_MainSpecRoll()		
-	guild = ("Cold Embrace");
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
-	playerName = UnitName("Player");
-	if guildName == guild then
-		for i = 1,250 do
-			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			playerName = UnitName("Player");
-			if name == playerName then
-				if officernote == ("") then RandomRoll(0,99);
-				else
-					RandomRoll(officernote*0.75,officernote*0.25+100);
-				end
-			end
-		end
-	else 
-		RandomRoll(1,100);
-	end
-end
-
-function ColdEmbrace_OffSpecRoll()
-	RandomRoll(1,69);
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbrace_ReadyCheck()
-	isLeader  = IsRaidLeader();
-	isOfficer = IsRaidOfficer();
-	if isLeader then
-		DoReadyCheck();
-	elseif isOfficer then 
-		SendChatMessage("Please do a Ready Check", "OFFICER"); 
-	else
-		DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant.");
-	end
-end
-
-function ColdEmbrace_MasterLoot()
-	isLeader  = IsRaidLeader();
-	isOfficer = IsRaidOfficer(); 
-	playerName = UnitName("Player");
-	lootmethod = GetLootMethod();
-	if lootmethod == ("master") then DEFAULT_CHAT_FRAME:AddMessage("Master Looter already set."); 
-	elseif lootmethod == ("group") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
-		if isLeader then SetLootMethod("master", playerName);
-		elseif isOfficer then SendChatMessage("Please change to Master Loot", "OFFICER"); 
-		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
-	end
-end
-
-function ColdEmbrace_GroupLoot()
-	isLeader  = IsRaidLeader();
-	isOfficer = IsRaidOfficer(); 
-	lootmethod = GetLootMethod();
-	if lootmethod == ("group") then DEFAULT_CHAT_FRAME:AddMessage("Group Loot already set.");
-	elseif lootmethod == ("master") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
-		if isLeader then SetLootMethod("group");
-		elseif isOfficer then SendChatMessage("Please change to Group Loot", "OFFICER");
-		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
-	end
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbrace_RaidInvites()	
-
-	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
-	if GetNumRaidMembers() >= 0 then SendChatMessage("Write + for invite", "GUILD"); end
-	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
-
-	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
-end
-
-function ColdEmbrace_SearchInvite()
-	guild = ("Cold Embrace");
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
-	playerName = UnitName("Player");
-	if guildRankIndex <= 3 then
-		for i = 1,250 do
-			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			if rankIndex <= 7 and online == 1 then
-				InviteByName(name);
-			end
-		end
-	else
-		DEFAULT_CHAT_FRAME:AddMessage("Your rank is not high enough to do that.");
-	end
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbraceAttackStart()
-	if not UnitIsDeadOrGhost("Target") then 
-		if not AttackFound then
-			for i = 1,72 do 
-				if IsAttackAction(i) then 
-					AttackFound = i; 
-				end; 
-			end; 
-		end; 
-		if AttackFound then
-			if not IsCurrentAction(AttackFound) then UseAction(AttackFound); 
-			end
-		end
-	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
-end
-
-function ColdEmbraceAttackStop()
-	if not UnitIsDeadOrGhost("Target") then 
-		if not AttackFound then
-			for i = 1,72 do 
-				if IsAttackAction(i) then 
-					AttackFound = i; 
-				end; 
-			end; 
-		end; 
-		if AttackFound then
-			if IsCurrentAction(AttackFound) then UseAction(AttackFound); 
-			end
-		end
-	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
-end
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbraceAdvertise()
-	id, name = GetChannelName("World");
-	SendChatMessage("Cold Embrace (EU) - Looking for more players to join our guild. We offer casual raid environment and a friendly guild atmosphere. Whisper for more info." ,"CHANNEL" ,nil ,id);
 end
