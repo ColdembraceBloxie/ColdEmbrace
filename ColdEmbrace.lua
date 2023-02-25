@@ -9,11 +9,9 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 local OriginalUIErrorsFrame_OnEvent;
 
 --[ Settings ]--
-ColdEmbraceVariables = {};
-CEV = { };
-local DCEV = {
-    RollFrame = 1,
-}
+ColdEmbraceVariables = {
+};
+
 
 local me = UnitName('player')
 
@@ -79,6 +77,15 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEK1 = "/attackstop";
 	SlashCmdList["CEK"] = ColdEmbraceAttackStop;
 
+	SLASH_CEL1 = "/celogout";
+	SlashCmdList["CEL"] = CE_LogoutRaid;
+
+
+
+
+	SLASH_CEV1 = "/cevc";
+	SlashCmdList["CEV"] = CE_VersionCheck;
+
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -93,7 +100,7 @@ function ColdEmbrace_Help()
 	--DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/advertise - Will post basic guild add in world chat (type /join world).",1,1,1);
+	--DEFAULT_CHAT_FRAME:AddMessage("/advertise - Will post basic guild add in world chat (type /join world).",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/attackstart and /attackstop - spammable start/stop attacking command (requires Attack from spellbook General tab to be ANYWHERE on the action bar):",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Requires Raid Lead/Assist and/or a Guild Officer rank:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/inviteraid - Start raid invites.",1,1,1);
@@ -139,7 +146,7 @@ function ColdEmbrace_OnEvent()
 		if strfind(arg1, "Please change to Group Loot", 1) then
 			isLeader = IsRaidLeader() 
 			if isLeader then
-				SetLootMethod("group");
+				SetLootMethod("Group", "1");
 				--SendChatMessage("GroupLoot activated", "OFFICER"); 
 			end
 		end
@@ -153,6 +160,22 @@ function ColdEmbrace_OnEvent()
 			
 		elseif strfind(arg1, "awarded", 1) then
 			CE_ClearFrames()
+		elseif strfind(arg1, "CE_VersionCheck:", 1) then
+			if strfind(arg1, "CE_VersionCheck: 001", 1) then
+			else
+				SendChatMessage("Addon: OUT OF DATE", "RAID");
+			end
+		elseif strfind(arg1, "Everyone LOGOUT!", 1) then
+			isLeader = IsRaidLeader() 
+			inInstance, instanceType = IsInInstance()
+			inRaidInstance  = (instanceType == 'raid');
+			if inRaidInstance then
+				if not isLeader then
+					Logout(); 
+				end
+			else
+				SendChatMessage("I am not inside of the instance.", "RAID");
+			end
 		end
 	elseif event == "START_LOOT_ROLL" then
 		CE_AutoRoll(arg1)
@@ -161,6 +184,14 @@ end
 
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
+
+function CE_VersionCheck()
+	SendChatMessage("CE_VersionCheck: 001", "RAID_WARNING");
+end
+
+function CE_LogoutRaid()
+	SendChatMessage("Everyone LOGOUT!", "RAID_WARNING");
+end
 
 function CE_AutoRoll(id)
 	local  inInstance, instanceType = IsInInstance()
@@ -327,7 +358,7 @@ function ColdEmbrace_MainSpecRoll()
 			if name == playerName then
 				if officernote == ("") then RandomRoll(0,99);
 				else
-					RandomRoll(officernote+0,(officernote/2)+100);
+					RandomRoll(officernote*0.75,officernote*0.25+100);
 				end
 			end
 		end
