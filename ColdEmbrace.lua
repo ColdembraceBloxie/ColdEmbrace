@@ -321,7 +321,7 @@ function ColdEmbrace_SearchInvite()
 	if guildRankIndex <= 3 then
 		for i = 1,250 do
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			if rankIndex <= 7 and online == 1 then
+			if rankIndex <= 6 and online == 1 then
 				InviteByName(name);
 			end
 		end
