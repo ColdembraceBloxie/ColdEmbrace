@@ -370,12 +370,12 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function CE_DrawFrames()
-	if ColdEmbraceVariables.RollFrame > 0 then
+	--if ColdEmbraceVariables.RollFrame > 0 then
 		CE_ItemFrame();
 		CE_NeedFrame(); ColdEmbraceMS:Show(); 
 		CE_GreedFrame(); ColdEmbraceOS:Show();
 		CE_PassFrame(); ColdEmbracePS:Show();
-	end
+	--end
 end
 
 function CE_ClearFrames()
@@ -387,14 +387,14 @@ function CE_ClearFrames()
 end
 
 function CE_RollFramesToggle()
-	if ColdEmbraceVariables.RollFrame < 1 then 
-		ColdEmbraceVariables.RollFrame = 1
-		DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
-	else
-		ColdEmbraceVariables.RollFrame = 0
-		DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
-	end
-	return
+	--if ColdEmbraceVariables.RollFrame < 1 then 
+	--	ColdEmbraceVariables.RollFrame = 1
+	--	DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
+	--else
+	--	ColdEmbraceVariables.RollFrame = 0
+	--	DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
+	--end
+	--return
 end
 
 function CE_ItemFrame()
