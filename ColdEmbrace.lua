@@ -10,6 +10,7 @@ local OriginalUIErrorsFrame_OnEvent;
 
 --[ Settings ]--
 ColdEmbraceVariables = {
+	RollFrame = 1;
 };
 
 
@@ -97,7 +98,7 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ceclear or /clearframes - Clears all visible frames.",1,1,1);
-	--DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
 	--DEFAULT_CHAT_FRAME:AddMessage("/advertise - Will post basic guild add in world chat (type /join world).",1,1,1);
@@ -174,7 +175,7 @@ function ColdEmbrace_OnEvent()
 					Logout(); 
 				end
 			else
-				SendChatMessage("I am not inside of the instance.", "RAID");
+				SendChatMessage("I am not inside of the raid instance.", "RAID");
 			end
 		end
 	elseif event == "START_LOOT_ROLL" then
@@ -247,7 +248,7 @@ function CE_AutoRoll(id)
 	end
 	if inRaidInstance then	
 		local _, name, _, quality = GetLootRollItemInfo(id);
-		if string.find(name ,"Elementium Ore") or string.find(name ,"Hourglass Sand") or string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
+		if string.find(name ,"Elementium Ore") or string.find(name ,"Hourglass Sand") or string.find(name ,"Wartorn") or string.find(name ,"Word of Thawing") or string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
 			if isLeader then RollOnLoot(id, 1); end
 			if not isLeader then RollOnLoot(id, 0); end
 			local _, _, _, hex = GetItemQualityColor(quality)
@@ -296,7 +297,7 @@ function ColdEmbrace_GroupLoot()
 	lootmethod = GetLootMethod();
 	if lootmethod == ("group") then DEFAULT_CHAT_FRAME:AddMessage("Group Loot already set.");
 	elseif lootmethod == ("master") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
-		if isLeader then SetLootMethod("group");
+		if isLeader then SetLootMethod("group","1");
 		elseif isOfficer then SendChatMessage("Please change to Group Loot", "OFFICER");
 		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
 	end
@@ -369,12 +370,12 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function CE_DrawFrames()
-	--if ColdEmbraceVariables.RollFrame > 0 then
+	if ColdEmbraceVariables.RollFrame > 0 then
 		CE_ItemFrame();
 		CE_NeedFrame(); ColdEmbraceMS:Show(); 
 		CE_GreedFrame(); ColdEmbraceOS:Show();
 		CE_PassFrame(); ColdEmbracePS:Show();
-	--end
+	end
 end
 
 function CE_ClearFrames()
@@ -388,10 +389,10 @@ end
 function CE_RollFramesToggle()
 	if ColdEmbraceVariables.RollFrame < 1 then 
 		ColdEmbraceVariables.RollFrame = 1
-		--DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
+		DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
 	else
 		ColdEmbraceVariables.RollFrame = 0
-		--DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
+		DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
 	end
 	return
 end
@@ -417,8 +418,8 @@ end
 function CE_NeedFrame()
 	NeedFrameCE = CreateFrame("Frame",nil,UIParent)
 	NeedFrameCE:SetFrameStrata("BACKGROUND")
-	NeedFrameCE:SetWidth(32) -- Set these to whatever height/width is needed 
-	NeedFrameCE:SetHeight(32) -- for your Texture
+	NeedFrameCE:SetWidth(32)
+	NeedFrameCE:SetHeight(32)
 
 	local t = NeedFrameCE:CreateTexture(nil,"BACKGROUND")
 	t:SetTexture("Interface\\Addons\\ColdEmbrace\\ms_icon.tga")
@@ -432,8 +433,8 @@ end
 function CE_GreedFrame()
 	GreedFrameCE = CreateFrame("Frame",nil,UIParent)
 	GreedFrameCE:SetFrameStrata("BACKGROUND")
-	GreedFrameCE:SetWidth(32) -- Set these to whatever height/width is needed 
-	GreedFrameCE:SetHeight(32) -- for your Texture
+	GreedFrameCE:SetWidth(32)  
+	GreedFrameCE:SetHeight(32) 
 
 	local t = GreedFrameCE:CreateTexture(nil,"BACKGROUND")
 	t:SetTexture("Interface\\Addons\\ColdEmbrace\\os_icon.tga")
@@ -447,8 +448,8 @@ end
 function CE_PassFrame()
 	PassFrameCE = CreateFrame("Frame",nil,UIParent)
 	PassFrameCE:SetFrameStrata("BACKGROUND")
-	PassFrameCE:SetWidth(32) -- Set these to whatever height/width is needed 
-	PassFrameCE:SetHeight(32) -- for your Texture
+	PassFrameCE:SetWidth(32) 
+	PassFrameCE:SetHeight(32) 
 
 	local t = PassFrameCE:CreateTexture(nil,"BACKGROUND")
 	t:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
