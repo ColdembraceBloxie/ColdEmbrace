@@ -248,7 +248,7 @@ function CE_AutoRoll(id)
 	end
 	if inRaidInstance then	
 		local _, name, _, quality = GetLootRollItemInfo(id);
-		if string.find(name ,"Elementium Ore") or string.find(name ,"Hourglass Sand") or string.find(name ,"Wartorn") or string.find(name ,"Word of Thawing") or string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
+		if string.find(name ,"Elemental Earth") or string.find(name ,"Elemental Air") or string.find(name ,"Elemental Water") or string.find(name ,"Elementium Ore") or string.find(name ,"Hourglass Sand") or string.find(name ,"Wartorn") or string.find(name ,"Word of Thawing") or string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
 			if isLeader then RollOnLoot(id, 1); end
 			if not isLeader then RollOnLoot(id, 0); end
 			local _, _, _, hex = GetItemQualityColor(quality)
@@ -337,7 +337,7 @@ end
 function ColdEmbraceAttackStart()
 	if not UnitIsDeadOrGhost("Target") then 
 		if not AttackFound then
-			for i = 1,72 do 
+			for i = 1,99 do 
 				if IsAttackAction(i) then 
 					AttackFound = i; 
 				end; 
@@ -353,7 +353,7 @@ end
 function ColdEmbraceAttackStop()
 	if not UnitIsDeadOrGhost("Target") then 
 		if not AttackFound then
-			for i = 1,72 do 
+			for i = 1,99 do 
 				if IsAttackAction(i) then 
 					AttackFound = i; 
 				end; 
