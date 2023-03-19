@@ -23,6 +23,7 @@ local me = UnitName('player')
 function ColdEmbrace_OnLoad()
 	this:RegisterEvent("CHAT_MSG_SYSTEM");
 	this:RegisterEvent("CHAT_MSG_OFFICER");
+	this:RegisterEvent("CHAT_MSG_WHISPER");
 	this:RegisterEvent("CHAT_MSG_RAID_WARNING");
 	this:RegisterEvent("START_LOOT_ROLL");
 
@@ -155,6 +156,19 @@ function ColdEmbrace_OnEvent()
 				--SendChatMessage("GroupLoot activated", "OFFICER"); 
 			end
 		end
+	elseif event == "CHAT_MSG_WHISPER" then
+		if strfind(arg1, "CE_LogoutPlease", 1) then
+			isLeader = IsRaidLeader() 
+			inInstance, instanceType = IsInInstance()
+			inRaidInstance  = (instanceType == 'raid');
+			if inRaidInstance then
+				if not isLeader then
+					Logout(); 
+				end
+			else
+				SendChatMessage("Logout prevented: Player not inside of the raid instance.", "RAID");
+			end
+		end
 	elseif event == "CHAT_MSG_RAID_WARNING" then
 		if strfind(arg1, "CE_Roll:", 1) then
 		itemLink = arg1
@@ -170,7 +184,7 @@ function ColdEmbrace_OnEvent()
 			else
 				SendChatMessage("Addon: OUT OF DATE", "RAID");
 			end
-		elseif strfind(arg1, "Everyone LOGOUT!", 1) then
+		elseif strfind(arg1, "CE_EveryoneLogout", 1) then
 			isLeader = IsRaidLeader() 
 			inInstance, instanceType = IsInInstance()
 			inRaidInstance  = (instanceType == 'raid');
@@ -179,7 +193,7 @@ function ColdEmbrace_OnEvent()
 					Logout(); 
 				end
 			else
-				SendChatMessage("I am not inside of the raid instance.", "RAID");
+				SendChatMessage("Logout prevented: Player not inside of the raid instance.", "RAID");
 			end
 		end
 	elseif event == "START_LOOT_ROLL" then
@@ -195,7 +209,7 @@ function CE_VersionCheck()
 end
 
 function CE_LogoutRaid()
-	SendChatMessage("Everyone LOGOUT!", "RAID_WARNING");
+	SendChatMessage("CE_EveryoneLogout", "RAID_WARNING");
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -214,7 +228,7 @@ function ColdEmbrace_MainSpecRoll()
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
 	playerName = UnitName("Player");
 	if guildName == guild then
-		for i = 1,250 do
+		for i = 1,450 do
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
 			playerName = UnitName("Player");
 			if name == playerName then
@@ -313,7 +327,7 @@ end
 function ColdEmbrace_RaidInvites()	
 
 	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
-	if GetNumRaidMembers() >= 0 then SendChatMessage("Write + for invite", "GUILD"); end
+	if GetNumRaidMembers() >= 0 then SendChatMessage("Write + for raid invite", "GUILD"); end
 	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
 
 	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
@@ -324,7 +338,7 @@ function ColdEmbrace_SearchInvite()
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
 	playerName = UnitName("Player");
 	if guildRankIndex <= 3 then
-		for i = 1,250 do
+		for i = 1,450 do
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
 			if rankIndex <= 6 and online == 1 then
 				InviteByName(name);
@@ -422,12 +436,12 @@ function CE_ItemFrame()
 		ItemFrameCE:SetScript("OnMouseDown", function()
 			if arg1 == 'LeftButton' then
 				this:StartMoving()
-				print("OnMouseDown")
+				--print("OnMouseDown")
 			end
 		end)
 		ItemFrameCE:SetScript("OnMouseUp", function()
 			this:StopMovingOrSizing()
-			print("OnMouseUp", button)
+			--print("OnMouseUp", button)
 		end)
 	end
 	ItemFrameCE:Show();
