@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="ColdEmbrace.lua"/>
-	<Frame name="ColdEmbrace" parent="UIParent" enableMouse="true" hidden="false" frameStrata="LOW">
+	<Frame name="ColdEmbrace" parent="UIParent" movable="true" enableMouse="true" hidden="false" frameStrata="LOW">
 		<Size>
 			<AbsDimension x="1" y="1"/>
 		</Size>
@@ -29,14 +29,7 @@
 				</NormalTexture>
 				<PushedTexture>
 				</PushedTexture>
-				<Scripts>
-					<OnClick>
-						ColdEmbrace_OnClickMS();
-						ColdEmbraceMS:Hide(); 
-						ColdEmbraceOS:Hide();
-						ColdEmbracePS:Hide(); 
-					</OnClick>
-				</Scripts>
+
 			</Button>
 			
 			<Button name="ColdEmbraceOS">
@@ -54,14 +47,7 @@
 				</NormalTexture>
 				<PushedTexture>
 				</PushedTexture>
-				<Scripts>
-					<OnClick>
-						ColdEmbrace_OnClickOS();
-						ColdEmbraceMS:Hide(); 
-						ColdEmbraceOS:Hide();
-						ColdEmbracePS:Hide(); 
-					</OnClick>
-				</Scripts>
+
 			</Button>
 
 			<Button name="ColdEmbracePS">
@@ -79,14 +65,7 @@
 				</NormalTexture>
 				<PushedTexture>
 				</PushedTexture>
-				<Scripts>
-					<OnClick>
-						ColdEmbrace_OnClickPS();
-						ColdEmbraceMS:Hide(); 
-						ColdEmbraceOS:Hide();
-						ColdEmbracePS:Hide();
-					</OnClick>
-				</Scripts>
+
 			</Button>
 
 		</Frames>
