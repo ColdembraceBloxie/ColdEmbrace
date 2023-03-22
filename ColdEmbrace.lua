@@ -417,7 +417,7 @@ end
 
 function CE_ItemFrame()
 	if not ItemFrameCE then
-		ItemFrameCE = CreateFrame("Button", nil, UIParent)
+		ItemFrameCE = CreateFrame("Button", "ItemFrameCE", UIParent)
 		ItemFrameCE:ClearAllPoints()
 		ItemFrameCE:SetWidth(450)
 		ItemFrameCE:SetHeight(32)
@@ -429,6 +429,7 @@ function CE_ItemFrame()
 		ItemFrameCE.text:SetPoint("CENTER", 0, 0)
 		ItemFrameCE.text:SetFontObject(GameFontWhite)
 		ItemFrameCE:SetMovable(true)
+		ItemFrameCE:EnableMouse(true)
 		ItemFrameCE:SetScript("OnUpdate", function()
 			this.text:SetText(itemLink)
 			--ItemFrameCE:Show()
@@ -441,6 +442,7 @@ function CE_ItemFrame()
 		end)
 		ItemFrameCE:SetScript("OnMouseUp", function()
 			this:StopMovingOrSizing()
+			this:SetUserPlaced(true)
 			--print("OnMouseUp", button)
 		end)
 	end
@@ -450,7 +452,7 @@ end
 function CE_NeedFrame()
 	if not NeedFrameCE then
 		NeedFrameCE = CreateFrame("Button",nil,UIParent)
-		NeedFrameCE:SetFrameStrata("BACKGROUND")
+		--NeedFrameCE:SetFrameStrata("BACKGROUND")
 		NeedFrameCE:SetWidth(32)
 		NeedFrameCE:SetHeight(32)
 		NeedFrameCE:SetMovable(true)
@@ -475,7 +477,7 @@ end
 function CE_GreedFrame()
 	if not GreedFrameCE then
 		GreedFrameCE = CreateFrame("Button",nil,UIParent)
-		GreedFrameCE:SetFrameStrata("BACKGROUND")
+		--GreedFrameCE:SetFrameStrata("BACKGROUND")
 		GreedFrameCE:SetWidth(32)  
 		GreedFrameCE:SetHeight(32) 
 		GreedFrameCE:SetMovable(true)
@@ -500,7 +502,7 @@ end
 function CE_PassFrame()
 	if not PassFrameCE then
 		PassFrameCE = CreateFrame("Button",nil,UIParent)
-		PassFrameCE:SetFrameStrata("BACKGROUND")
+		--PassFrameCE:SetFrameStrata("BACKGROUND")
 		PassFrameCE:SetWidth(32) 
 		PassFrameCE:SetHeight(32) 
 		PassFrameCE:SetMovable(true)
