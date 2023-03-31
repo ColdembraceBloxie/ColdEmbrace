@@ -10,7 +10,7 @@ local OriginalUIErrorsFrame_OnEvent;
 
 local addon_version = "2"
 local addon_prefix_version = 'CEVersion'
-local addon_prefix_version_force = 'CEVAnnounce'
+local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
 
 --[ Settings ]--
@@ -205,9 +205,9 @@ function ColdEmbrace_OnEvent()
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		ColdEmbrace_AnnounceMyVersion()
 	elseif event == "CHAT_MSG_ADDON" then
-		if arg1 == 'CEVersion' then
+		if arg1 == addon_prefix_version then
 			ColdEmbrace_OnVersionAnnounce(arg2, arg3, arg4)
-		elseif arg1 == 'CEVAnnounce' then
+		elseif arg1 == addon_prefix_version_force_announce then
 			ColdEmbrace_AnnounceMyVersion()
 		end
 	end
@@ -556,17 +556,18 @@ end
 
 
 function ColdEmbrace_AnnounceMyVersion()
-    SendAddonMessage(addon_prefix_version, addon_version, "PARTY")
+    --SendAddonMessage(addon_prefix_version, addon_version, "PARTY")
     SendAddonMessage(addon_prefix_version, addon_version, "GUILD")
     SendAddonMessage(addon_prefix_version, addon_version, "RAID")
-    SendAddonMessage(addon_prefix_version, addon_version, "BATTLEGROUND")
+    --SendAddonMessage(addon_prefix_version, addon_version, "BATTLEGROUND")
 end
 
 function ColdEmbrace_VersionForceAnnounce()
-    SendAddonMessage(addon_prefix_version_force, addon_version, "PARTY")
-    SendAddonMessage(addon_prefix_version_force, addon_version, "GUILD")
-    SendAddonMessage(addon_prefix_version_force, addon_version, "RAID")
-    SendAddonMessage(addon_prefix_version_force, addon_version, "BATTLEGROUND")
+    --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "PARTY")
+    SendAddonMessage(addon_prefix_version_force_announce, addon_version, "GUILD")
+    SendAddonMessage(addon_prefix_version_force_announce, addon_version, "RAID")
+    --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "BATTLEGROUND")
+	DEFAULT_CHAT_FRAME:AddMessage("requested a version announce by all members")
 end
 
 function ColdEmbrace_OnVersionAnnounce(version, where, who)
@@ -574,17 +575,27 @@ function ColdEmbrace_OnVersionAnnounce(version, where, who)
 end
 
 function ColdEmbrace_VersionCheck()
-	-- TODO a sort
 	-- TODO colorful output
-	DEFAULT_CHAT_FRAME:AddMessage("addon versions:")
-	local num_issues = 0
 
-	local raid_members = GetNumRaidMembers()
+	local raid_members = {}
 
 	for i = 1, GetNumRaidMembers() do
 		local unit = 'raid' .. i
 		local who = UnitName(unit)
+		table.insert(raid_members, who)
+	end
 
+	if table.getn(raid_members) == 0 then
+		DEFAULT_CHAT_FRAME:AddMessage("no players found. are you in a raid?")
+		return
+	end
+
+	DEFAULT_CHAT_FRAME:AddMessage("addon versions:")
+	local num_issues = 0
+
+	table.sort(raid_members)
+
+	for i, who in ipairs(raid_members) do
 		local version = tostring(addon_version_cache[who])
 
 		local extra_info = nil
