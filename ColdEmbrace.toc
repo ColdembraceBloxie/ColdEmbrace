@@ -1,8 +1,8 @@
-## Version: 0.69
+## Version: 2
 ## Interface: 11200
 ## Title: ColdEmbrace
 ## Author: Sebben/Anachrony
-## Notes:
+## Notes: Official Guild Addon of 'Cold Embrace' at Turtle WoW (https://turtle-wow.org)
 ## SavedVariables: 
 ## SavedVariablesPerCharacter: ColdEmbraceVariables
 

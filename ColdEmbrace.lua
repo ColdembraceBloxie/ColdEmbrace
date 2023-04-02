@@ -1,9 +1,9 @@
 -------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
 BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 -------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
+-- Official Guild Addon of 'Cold Embrace' at Turtle WoW (https://turtle-wow.org)
+-- created by Sebben/Anachrony (https://github.com/Sebben7Sebben) and modified by Melbaa/Psykhe (https://github.com/melbaa)
+
 --[ References ]--
 
 local OriginalUIErrorsFrame_OnEvent;
@@ -93,9 +93,6 @@ function ColdEmbrace_OnLoad()
 
 	SLASH_CEL1 = "/celogout";
 	SlashCmdList["CEL"] = CE_LogoutRaid;
-
-
-
 
 	SLASH_CEV1 = "/cevc";
 	SlashCmdList["CEV"] = ColdEmbrace_VersionCheck;
