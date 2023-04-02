@@ -452,6 +452,17 @@ function CE_ItemFrame()
 			this:StopMovingOrSizing()
 			this:SetUserPlaced(true)
 		end)
+		ItemFrameCE:SetScript("OnEnter", function()
+			ColdEmbrace_Tooltip:SetOwner(ItemFrameCE, "ANCHOR_CURSOR")
+			if not itemLink then return end
+			local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
+			if not itemId then return end
+			ColdEmbrace_Tooltip:SetHyperlink('item:' .. itemId .. ":0:0:0")
+			ColdEmbrace_Tooltip:Show()
+		end)
+		ItemFrameCE:SetScript("OnLeave", function()
+			ColdEmbrace_Tooltip:Hide()
+		end)
 	end
 	ItemFrameCE:Show();
 end
