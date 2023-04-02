@@ -8,6 +8,11 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
+local addon_version = "2"
+local addon_prefix_version = 'CEVersion'
+local addon_prefix_version_force_announce = 'CEVAnnounce'
+local addon_version_cache = {}
+
 --[ Settings ]--
 ColdEmbraceVariables = {
 	RollFrame = 1;
@@ -27,6 +32,8 @@ function ColdEmbrace_OnLoad()
 	this:RegisterEvent("CHAT_MSG_WHISPER");
 	this:RegisterEvent("CHAT_MSG_RAID_WARNING");
 	this:RegisterEvent("START_LOOT_ROLL");
+	this:RegisterEvent("CHAT_MSG_ADDON");
+	this:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	SLASH_CEZ1 = "/ce";
 	SLASH_CEZ2 = "/coldembrace";
@@ -91,7 +98,9 @@ function ColdEmbrace_OnLoad()
 
 
 	SLASH_CEV1 = "/cevc";
-	SlashCmdList["CEV"] = CE_VersionCheck;
+	SlashCmdList["CEV"] = ColdEmbrace_VersionCheck;
+	SLASH_CEVA1 = "/ceva";
+	SlashCmdList["CEVA"] = ColdEmbrace_VersionForceAnnounce;
 
 end
 
@@ -190,11 +199,6 @@ function ColdEmbrace_OnEvent()
 			
 		elseif strfind(arg1, "awarded", 1) then
 			CE_ClearFrames()
-		elseif strfind(arg1, "CE_VersionCheck:", 1) then
-			if strfind(arg1, "CE_VersionCheck: 001", 1) then
-			else
-				SendChatMessage("Addon: OUT OF DATE", "RAID");
-			end
 		elseif strfind(arg1, "CE_EveryoneLogout", 1) then
 			isLeader = IsRaidLeader() 
 			inInstance, instanceType = IsInInstance()
@@ -210,15 +214,20 @@ function ColdEmbrace_OnEvent()
 	elseif event == "START_LOOT_ROLL" then
 		CE_AutoRoll(arg1)
 
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		ColdEmbrace_AnnounceMyVersion()
+	elseif event == "CHAT_MSG_ADDON" then
+		if arg1 == addon_prefix_version then
+			ColdEmbrace_OnVersionAnnounce(arg2, arg3, arg4)
+		elseif arg1 == addon_prefix_version_force_announce then
+			ColdEmbrace_AnnounceMyVersion()
+		end
 	end
 end
 
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-function CE_VersionCheck()
-	SendChatMessage("CE_VersionCheck: 001", "RAID_WARNING");
-end
 
 function CE_LogoutRaid()
 	SendChatMessage("CE_EveryoneLogout", "RAID_WARNING");
@@ -592,13 +601,22 @@ function CE_ItemFrame()
 		ItemFrameCE:SetScript("OnMouseDown", function()
 			if arg1 == 'LeftButton' then
 				this:StartMoving()
-				--print("OnMouseDown")
 			end
 		end)
 		ItemFrameCE:SetScript("OnMouseUp", function()
 			this:StopMovingOrSizing()
 			this:SetUserPlaced(true)
-			--print("OnMouseUp", button)
+		end)
+		ItemFrameCE:SetScript("OnEnter", function()
+			GameTooltip:SetOwner(ItemFrameCE, "ANCHOR_CURSOR")
+			if not itemLink then return end
+			local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
+			if not itemId then return end
+			GameTooltip:SetHyperlink('item:' .. itemId .. ":0:0:0")
+			GameTooltip:Show()
+		end)
+		ItemFrameCE:SetScript("OnLeave", function()
+			GameTooltip:Hide()
 		end)
 	end
 	ItemFrameCE:Show();
@@ -700,4 +718,62 @@ function ColdEmbrace_OnClickPS()
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+end
+
+
+function ColdEmbrace_AnnounceMyVersion()
+    --SendAddonMessage(addon_prefix_version, addon_version, "PARTY")
+    SendAddonMessage(addon_prefix_version, addon_version, "GUILD")
+    SendAddonMessage(addon_prefix_version, addon_version, "RAID")
+    --SendAddonMessage(addon_prefix_version, addon_version, "BATTLEGROUND")
+end
+
+function ColdEmbrace_VersionForceAnnounce()
+    --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "PARTY")
+    SendAddonMessage(addon_prefix_version_force_announce, addon_version, "GUILD")
+    SendAddonMessage(addon_prefix_version_force_announce, addon_version, "RAID")
+    --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "BATTLEGROUND")
+	DEFAULT_CHAT_FRAME:AddMessage("requested a version announce by all members")
+end
+
+function ColdEmbrace_OnVersionAnnounce(version, where, who)
+	addon_version_cache[who] = version
+end
+
+function ColdEmbrace_VersionCheck()
+	-- TODO colorful output
+
+	local raid_members = {}
+
+	for i = 1, GetNumRaidMembers() do
+		local unit = 'raid' .. i
+		local who = UnitName(unit)
+		table.insert(raid_members, who)
+	end
+
+	if table.getn(raid_members) == 0 then
+		DEFAULT_CHAT_FRAME:AddMessage("no players found. are you in a raid?")
+		return
+	end
+
+	DEFAULT_CHAT_FRAME:AddMessage("addon versions:")
+	local num_issues = 0
+
+	table.sort(raid_members)
+
+	for i, who in ipairs(raid_members) do
+		local version = tostring(addon_version_cache[who])
+
+		local extra_info = nil
+		if version == 'nil' then
+			extra_info = 'unknown'
+		elseif version ~= addon_version then
+			extra_info = 'outdated/different'
+		end
+		if extra_info then
+			DEFAULT_CHAT_FRAME:AddMessage(who .. ' ' .. version .. ' ' .. extra_info)
+			num_issues = num_issues + 1
+		end
+	end
+	DEFAULT_CHAT_FRAME:AddMessage("addon versions summary: " .. num_issues .. ' issues')
 end
