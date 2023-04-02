@@ -26,6 +26,7 @@ local PassFrameCE = nil
 local me = UnitName('player')
 
 function ColdEmbrace_OnLoad()
+	this:RegisterEvent("RESURRECT_REQUEST")
 	this:RegisterEvent("CHAT_MSG_SYSTEM");
 	this:RegisterEvent("CHAT_MSG_OFFICER");
 	this:RegisterEvent("CHAT_MSG_WHISPER");
@@ -144,6 +145,16 @@ function ColdEmbrace_OnEvent()
 				Logout(); 
 			end
 		end
+	elseif event == "RESURRECT_REQUEST" then
+		UIErrorsFrame:AddMessage(arg1.." - Resurrection")
+		TargetByName(arg1, true)
+		if GetCorpseRecoveryDelay() == 0 and UnitIsPlayer("target") and UnitIsVisible("target") and not UnitAffectingCombat("target") then
+			AcceptResurrect()
+			StaticPopup_Hide("RESURRECT_NO_TIMER"); 
+			StaticPopup_Hide("RESURRECT_NO_SICKNESS");
+			StaticPopup_Hide("RESURRECT");
+		end
+		TargetLastTarget();
 	elseif event == "CHAT_MSG_OFFICER" then
 		if strfind(arg1, "Please do a Ready Check", 1) then
 			isLeader = IsRaidLeader() 
@@ -175,7 +186,7 @@ function ColdEmbrace_OnEvent()
 					Logout(); 
 				end
 			else
-				SendChatMessage("Logout prevented: Player not inside of the raid instance.", "RAID");
+				SendChatMessage("Logout prevented: Player is not in the raid instance.", "RAID");
 			end
 		end
 	elseif event == "CHAT_MSG_RAID_WARNING" then
@@ -197,11 +208,12 @@ function ColdEmbrace_OnEvent()
 					Logout(); 
 				end
 			else
-				SendChatMessage("Logout prevented: Player not inside of the raid instance.", "RAID");
+				SendChatMessage("Logout prevented: Player is not in the raid instance.", "RAID");
 			end
 		end
 	elseif event == "START_LOOT_ROLL" then
 		CE_AutoRoll(arg1)
+
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		ColdEmbrace_AnnounceMyVersion()
 	elseif event == "CHAT_MSG_ADDON" then
@@ -263,7 +275,11 @@ function CE_AutoRoll(id)
 	inRaidInstance  = (instanceType == 'raid');
 	inArenaInstance = (instanceType == 'arena');
 	inPvPInstance   = (instanceType == 'pvp');
-	isLeader = IsRaidLeader() 
+	isLeader = IsRaidLeader();
+	class = UnitClass("Player");
+	
+
+
 	RollReturn = function()
 		local txt = ""
 		if isLeader then
@@ -275,17 +291,156 @@ function CE_AutoRoll(id)
 	end
 	if inRaidInstance then	
 		local _, name, _, quality = GetLootRollItemInfo(id);
-		if string.find(name ,"Heart of Fire") or string.find(name ,"Elemental Earth") or string.find(name ,"Elemental Air") or string.find(name ,"Elemental Water") or string.find(name ,"Elementium Ore") or string.find(name ,"Hourglass Sand") or string.find(name ,"Wartorn") or string.find(name ,"Word of Thawing") or string.find(name ,"Fiery Core") or string.find(name ,"Lava Core") or string.find(name ,"Blood of the Mountain") or string.find(name ,"Scarab") or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) then
-			if isLeader then RollOnLoot(id, 1); end
-			if not isLeader then RollOnLoot(id, 0); end
-			local _, _, _, hex = GetItemQualityColor(quality)
-			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-			return
-		elseif string.find(name ,"Hakkari Bijou") or string.find(name ,"Coin") then
+
+		if string.find(name ,"Hakkari Bijou") 
+		or string.find(name ,"Coin") then
+
 			RollOnLoot(id, 1);
 			local _, _, _, hex = GetItemQualityColor(quality)
 			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto NEED "..hex..GetLootRollItemLink(id))
 			return
+		
+		elseif string.find(name ,"Blood of the Mountain") 
+			or string.find(name ,"Fiery Core") 
+			or string.find(name ,"Lava Core") 
+
+			or string.find(name ,"Heart of Fire") 
+			or string.find(name ,"Elemental Earth") 
+			or string.find(name ,"Elemental Air") 
+			or string.find(name ,"Elemental Water")
+		
+			or string.find(name ,"Elementium Ore") 
+			or string.find(name ,"Hourglass Sand") 
+			 
+			or string.find(name ,"Scarab") 
+			or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) 
+			
+			or string.find(name ,"Ironweb Spider Silk") 
+			or string.find(name ,"Wartorn") 
+			or string.find(name ,"Word of Thawing")
+			then
+
+				if isLeader then RollOnLoot(id, 1); end
+				if not isLeader then RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Priest
+		elseif string.find(name ,"Vambraces of Prophecy") 
+			or string.find(name ,"Girdle of Prophecy") 
+			then
+
+				if not isLeader and not class == "Priest" and 
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Mage
+		elseif string.find(name ,"Arcanist Bindings") 
+			or string.find(name ,"Arcanist Belt")
+			or string.find(name ,"Ringo's Blizzard Boots")
+			then
+
+				if not isLeader and not class == "Mage" and 
+				(class == "Priest" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return	
+			
+			-- Warlock
+		elseif string.find(name ,"Felheart Bracers") 
+			or string.find(name ,"Felheart Belt") 
+			then
+
+				if not isLeader and not class == "Warlock" and 
+				(class == "Mage" or class == "Priest" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Rogue
+		elseif string.find(name ,"Nightslayer Bracelets") 
+			or string.find(name ,"Nightslayer Belt")
+			then
+
+				if not isLeader and not class == "Rogue" and 
+				(class == "Mage" or class == "Warlock" or class == "Priest" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Druid
+		elseif string.find(name ,"Cenarion Bracers") 
+			or string.find(name ,"Cenarion Belt")
+			then
+
+				if not isLeader and not class == "Druid" and 
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Priest" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Hunter
+		elseif string.find(name ,"Giantstalker's Bracers") 
+			or string.find(name ,"Giantstalker's  Belt")
+			then
+
+				if not isLeader and not class == "Hunter" and 
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Priest" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Shaman
+		elseif string.find(name ,"Earthfury Bracers") 
+			or string.find(name ,"Earthfury Belt")
+			or string.find(name ,"Pauldrons of Elemental Fury") 
+			or string.find(name ,"Leggings of Elemental Fury")
+			then
+
+				if not isLeader and not class == "Shaman" and 
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Priest" or class == "Warrior" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Warrior
+		elseif string.find(name ,"Bracers of Might") 
+			or string.find(name ,"Belt of Might")
+			then
+
+				if not isLeader and not class == "Warrior" and 
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Priest" or class == "Paladin") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
+			-- Paladin
+		elseif string.find(name ,"Lawbringer Bracers") 
+			or string.find(name ,"Lawbringer Belt")
+			or string.find(name ,"Gloves of the Redeemed Prophecy")
+			or string.find(name ,"Spaulders of the Grand Crusader")
+			or string.find(name ,"Belt of the Grand Crusader")
+			or string.find(name ,"Leggings of the Grand Crusader")
+			then
+
+				if not isLeader and not class == "Paladin" and 
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Priest") then 
+					RollOnLoot(id, 0); end
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+
 		end
 	end	
 end
