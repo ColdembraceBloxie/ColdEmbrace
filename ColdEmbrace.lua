@@ -8,7 +8,7 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "2"
+local addon_version = "1.002"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
@@ -106,6 +106,7 @@ end
 
 function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("Thank you for downloading the Cold Embrace guild addon.",1,1,0);
+	DEFAULT_CHAT_FRAME:AddMessage("Version: "..addon_version,1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
@@ -720,14 +721,14 @@ end
 
 function ColdEmbrace_AnnounceMyVersion()
     --SendAddonMessage(addon_prefix_version, addon_version, "PARTY")
-    SendAddonMessage(addon_prefix_version, addon_version, "GUILD")
+    --SendAddonMessage(addon_prefix_version, addon_version, "GUILD")
     SendAddonMessage(addon_prefix_version, addon_version, "RAID")
     --SendAddonMessage(addon_prefix_version, addon_version, "BATTLEGROUND")
 end
 
 function ColdEmbrace_VersionForceAnnounce()
     --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "PARTY")
-    SendAddonMessage(addon_prefix_version_force_announce, addon_version, "GUILD")
+    --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "GUILD")
     SendAddonMessage(addon_prefix_version_force_announce, addon_version, "RAID")
     --SendAddonMessage(addon_prefix_version_force_announce, addon_version, "BATTLEGROUND")
 	DEFAULT_CHAT_FRAME:AddMessage("requested a version announce by all members")
