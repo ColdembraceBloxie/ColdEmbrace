@@ -518,8 +518,8 @@ end
 
 function ColdEmbrace_RaidInvites()	
 
-	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
-	if GetNumRaidMembers()  < 9 then SendChatMessage("Write + for raid invite", "GUILD"); end
+	if GetNumRaidMembers() <  5 then SendChatMessage("Starting RAID group!", "GUILD"); end
+	if GetNumRaidMembers() < 39 then SendChatMessage("Write + for raid invite", "GUILD"); end
 	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
 
 	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
