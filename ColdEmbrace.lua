@@ -73,8 +73,8 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEF1 = "/inviteraid";
 	SlashCmdList["CEF"] = ColdEmbrace_RaidInvites;
 
-	SLASH_CEF1 = "/invitecore";
-	SlashCmdList["CEX"] = ColdEmbrace_CoreInvites;
+	SLASH_CEM1 = "/invitecore";
+	SlashCmdList["CEM"] = ColdEmbrace_CoreInvites;
 
 	SLASH_CEG1 = "/rl";
 	SLASH_CEG2 = "/reload";
