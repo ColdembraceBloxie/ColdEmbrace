@@ -15,5 +15,5 @@ libs\Chronos\localization.de.lua
 libs\Chronos\localization.lua
 
 
-NoteUpdate.lua
+extra\NoteUpdate.lua
 ColdEmbrace.xml

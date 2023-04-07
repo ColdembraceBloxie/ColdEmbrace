@@ -73,6 +73,9 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEF1 = "/inviteraid";
 	SlashCmdList["CEF"] = ColdEmbrace_RaidInvites;
 
+	SLASH_CEF1 = "/invitecore";
+	SlashCmdList["CEX"] = ColdEmbrace_CoreInvites;
+
 	SLASH_CEG1 = "/rl";
 	SLASH_CEG2 = "/reload";
 	SlashCmdList["CEG"] = ReloadUI;
@@ -117,7 +120,8 @@ function ColdEmbrace_Help()
 	--DEFAULT_CHAT_FRAME:AddMessage("/advertise - Will post basic guild add in world chat (type /join world).",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/attackstart and /attackstop - spammable start/stop attacking command (requires Attack from spellbook General tab to be ANYWHERE on the action bar):",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Requires Raid Lead/Assist and/or a Guild Officer rank:",0,1,0);
-	DEFAULT_CHAT_FRAME:AddMessage("/inviteraid - Start raid invites.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/invitecore - Invite Core Raiders to group.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/inviteraid - Start raid invites for everyone.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rc or /readycheck - Start a Ready Check.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ml or /master or /masterloot - Change loot method to Master Loot.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/gl or /group or /grouploot - Change loot method to Group Loot.",1,1,1);
@@ -133,8 +137,8 @@ function ColdEmbrace_OnEvent()
 			SendChatMessage("No players are AFK", "RAID"); end
 		if strfind(arg1, "(.*) is not ready", 1) then
 			SendChatMessage("...group member is not ready !", "RAID"); end
-		if strfind(arg1, "The following players are AFK", 1) then
-			SendChatMessage("...some group members are AFK !", "RAID"); end
+		--if strfind(arg1, "The following players are AFK", 1) then
+		--	SendChatMessage("...some group members are AFK !", "RAID"); end
 		if strfind(arg1, "You are now", 1) and strfind(arg1, "(AFK)", 1) then
 			inInstance, instanceType = IsInInstance()
 			inRaidInstance  = (instanceType == 'raid');
@@ -251,9 +255,9 @@ function ColdEmbrace_MainSpecRoll()
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
 			playerName = UnitName("Player");
 			if name == playerName then
-				if officernote == ("") then RandomRoll(0,99);
+				if officernote == ("") then RandomRoll(0,100);
 				else
-					RandomRoll(officernote*0.75,officernote*0.25+100);
+					RandomRoll(officernote*0.7,officernote*0.5+100);
 				end
 			end
 		end
@@ -276,8 +280,6 @@ function CE_AutoRoll(id)
 	isLeader = IsRaidLeader();
 	class = UnitClass("Player");
 	
-
-
 	RollReturn = function()
 		local txt = ""
 		if isLeader then
@@ -301,7 +303,6 @@ function CE_AutoRoll(id)
 		elseif string.find(name ,"Blood of the Mountain") 
 			or string.find(name ,"Fiery Core") 
 			or string.find(name ,"Lava Core") 
-
 			or string.find(name ,"Heart of Fire") 
 			or string.find(name ,"Elemental Earth") 
 			or string.find(name ,"Elemental Air") 
@@ -475,7 +476,9 @@ function ColdEmbrace_GroupLoot()
 	isLeader  = IsRaidLeader();
 	isOfficer = IsRaidOfficer(); 
 	lootmethod = GetLootMethod();
-	if lootmethod == ("group") then DEFAULT_CHAT_FRAME:AddMessage("Group Loot already set.");
+	if lootmethod == ("group") then 
+		SetLootMethod("group","1");
+		DEFAULT_CHAT_FRAME:AddMessage("Group Loot already set.");
 	elseif lootmethod == ("master") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
 		if isLeader then SetLootMethod("group","1");
 		elseif isOfficer then SendChatMessage("Please change to Group Loot", "OFFICER");
@@ -486,10 +489,37 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
+function ColdEmbrace_CoreInvites()	
+
+	if GetNumRaidMembers()  < 5 then 
+		SendChatMessage("Inviting Core Raiders to group!", "OFFICER");
+		SendChatMessage("Please wait before inviting manually.", "OFFICER");
+	end
+	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
+
+	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_InviteCore);
+end
+
+function ColdEmbrace_InviteCore()
+	guild = ("Cold Embrace");
+	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
+	playerName = UnitName("Player");
+	if guildRankIndex <= 3 then
+		for i = 1,450 do
+			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
+			if rankIndex <= 4 and online == 1 then
+				InviteByName(name);
+			end
+		end
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("Your rank is not high enough to do that.");
+	end
+end
+
 function ColdEmbrace_RaidInvites()	
 
 	if GetNumRaidMembers()  < 5 then SendChatMessage("Starting RAID group!", "GUILD"); end
-	if GetNumRaidMembers() >= 0 then SendChatMessage("Write + for raid invite", "GUILD"); end
+	if GetNumRaidMembers()  < 9 then SendChatMessage("Write + for raid invite", "GUILD"); end
 	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
 
 	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
