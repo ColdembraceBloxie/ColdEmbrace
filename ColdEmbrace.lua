@@ -133,8 +133,8 @@ end
 
 function ColdEmbrace_OnEvent()
 	if event == "CHAT_MSG_SYSTEM" then
-		if strfind(arg1, "No players are AFK", 1) then
-			SendChatMessage("No players are AFK", "RAID"); end
+		--if strfind(arg1, "No players are AFK", 1) then
+			--SendChatMessage("No players are AFK", "RAID"); end
 		if strfind(arg1, "(.*) is not ready", 1) then
 			SendChatMessage("...group member is not ready !", "RAID"); end
 		--if strfind(arg1, "The following players are AFK", 1) then
@@ -330,7 +330,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Girdle of Prophecy") 
 			then
 
-				if not isLeader and not class == "Priest" and 
+				if not isLeader and --not class == "Priest" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -343,7 +343,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Ringo's Blizzard Boots")
 			then
 
-				if not isLeader and not class == "Mage" and 
+				if not isLeader and --not class == "Mage" and 
 				(class == "Priest" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -355,7 +355,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Felheart Belt") 
 			then
 
-				if not isLeader and not class == "Warlock" and 
+				if not isLeader and --not class == "Warlock" and 
 				(class == "Mage" or class == "Priest" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -367,7 +367,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Nightslayer Belt")
 			then
 
-				if not isLeader and not class == "Rogue" and 
+				if not isLeader and --not class == "Rogue" and 
 				(class == "Mage" or class == "Warlock" or class == "Priest" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -379,7 +379,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Cenarion Belt")
 			then
 
-				if not isLeader and not class == "Druid" and 
+				if not isLeader and --not class == "Druid" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Priest" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -391,7 +391,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Giantstalker's  Belt")
 			then
 
-				if not isLeader and not class == "Hunter" and 
+				if not isLeader and --not class == "Hunter" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Priest" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -405,7 +405,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Leggings of Elemental Fury")
 			then
 
-				if not isLeader and not class == "Shaman" and 
+				if not isLeader and --not class == "Shaman" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Priest" or class == "Warrior" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -417,7 +417,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Belt of Might")
 			then
 
-				if not isLeader and not class == "Warrior" and 
+				if not isLeader and --not class == "Warrior" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Priest" or class == "Paladin") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -433,7 +433,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Leggings of the Grand Crusader")
 			then
 
-				if not isLeader and not class == "Paladin" and 
+				if not isLeader and --not class == "Paladin" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Priest") then 
 					RollOnLoot(id, 0); end
 				local _, _, _, hex = GetItemQualityColor(quality)
@@ -519,7 +519,7 @@ end
 function ColdEmbrace_RaidInvites()	
 
 	if GetNumRaidMembers() <  5 then SendChatMessage("Starting RAID group!", "GUILD"); end
-	if GetNumRaidMembers() < 39 then SendChatMessage("Write + for raid invite", "GUILD"); end
+	if GetNumRaidMembers() < 30 then SendChatMessage("Write + for raid invite", "GUILD"); end
 	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
 
 	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
