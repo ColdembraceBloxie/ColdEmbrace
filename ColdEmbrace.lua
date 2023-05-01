@@ -307,6 +307,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Elemental Earth") 
 			or string.find(name ,"Elemental Air") 
 			or string.find(name ,"Elemental Water")
+			or string.find(name ,"Elemental Fire")
 		
 			or string.find(name ,"Elementium Ore") 
 			or string.find(name ,"Hourglass Sand") 
@@ -332,10 +333,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Priest" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Mage
 		elseif string.find(name ,"Arcanist Bindings") 
@@ -345,10 +347,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Mage" and 
 				(class == "Priest" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return	
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 			
 			-- Warlock
 		elseif string.find(name ,"Felheart Bracers") 
@@ -357,10 +360,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Warlock" and 
 				(class == "Mage" or class == "Priest" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Rogue
 		elseif string.find(name ,"Nightslayer Bracelets") 
@@ -369,10 +373,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Rogue" and 
 				(class == "Mage" or class == "Warlock" or class == "Priest" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Druid
 		elseif string.find(name ,"Cenarion Bracers") 
@@ -381,10 +386,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Druid" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Priest" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Hunter
 		elseif string.find(name ,"Giantstalker's Bracers") 
@@ -393,10 +399,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Hunter" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Priest" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Shaman
 		elseif string.find(name ,"Earthfury Bracers") 
@@ -407,10 +414,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Shaman" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Priest" or class == "Warrior" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Warrior
 		elseif string.find(name ,"Bracers of Might") 
@@ -419,10 +427,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Warrior" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Priest" or class == "Paladin") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 			-- Paladin
 		elseif string.find(name ,"Lawbringer Bracers") 
@@ -435,10 +444,11 @@ function CE_AutoRoll(id)
 
 				if not isLeader and --not class == "Paladin" and 
 				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Priest") then 
-					RollOnLoot(id, 0); end
-				local _, _, _, hex = GetItemQualityColor(quality)
-				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
-				return
+					RollOnLoot(id, 0);
+					local _, _, _, hex = GetItemQualityColor(quality)
+					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+					return
+				end
 
 		end
 	end	
@@ -491,8 +501,8 @@ end
 
 function ColdEmbrace_CoreInvites()	
 
-	if GetNumRaidMembers()  < 5 then 
-		SendChatMessage("Inviting Core Raiders to group!", "OFFICER");
+	if GetNumRaidMembers()  < 19 then 
+		SendChatMessage("Inviting Core and Casual Raiders to group!", "OFFICER");
 		SendChatMessage("Please wait before inviting manually.", "OFFICER");
 	end
 	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
@@ -518,8 +528,10 @@ end
 
 function ColdEmbrace_RaidInvites()	
 
-	if GetNumRaidMembers() <  5 then SendChatMessage("Starting RAID group!", "GUILD"); end
-	if GetNumRaidMembers() < 30 then SendChatMessage("Write + for raid invite", "GUILD"); end
+	if GetNumRaidMembers()  < 29 then 
+		SendChatMessage("Inviting Trial Raiders to group!", "OFFICER");
+		SendChatMessage("Please wait before inviting manually.", "OFFICER");
+	end
 	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
 
 	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
