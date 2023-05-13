@@ -8,7 +8,7 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "1.002"
+local addon_version = "1.03"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
