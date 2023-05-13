@@ -35,70 +35,39 @@ function ColdEmbrace_OnLoad()
 	this:RegisterEvent("CHAT_MSG_ADDON");
 	this:RegisterEvent("PLAYER_ENTERING_WORLD");
 
-	SLASH_CEZ1 = "/ce";
-	SLASH_CEZ2 = "/coldembrace";
-	SlashCmdList["CEZ"] = ColdEmbrace_Help;
+	SLASH_COLDEMBRACE1 = "/ce";
+	SLASH_COLDEMBRACE2 = "/coldembrace";
+	SlashCmdList["COLDEMBRACE"] = ColdEmbrace_Help;
 
-	SLASH_CEX1 = "/frames";
-	SLASH_CEX2 = "/rollframes";
-	SLASH_CEX3 = "/togglerollframes";
-	SlashCmdList["CEX"] = CE_RollFramesToggle;
-	
-	SLASH_CEY1 = "/ceclear";
-	SLASH_CEY2 = "/clearframes";
-	SlashCmdList["CEY"] = CE_ClearFrames;
+	SLASH_CERMS1 = "/rms";
+	SLASH_CERMS2 = "/rollms";
+	SlashCmdList["CERMS"] = ColdEmbrace_MainSpecRoll;
 
-	SLASH_CEA1 = "/rms";
-	SLASH_CEA2 = "/rollms";
-	SlashCmdList["CEA"] = ColdEmbrace_MainSpecRoll;
+	SLASH_CEROS1 = "/ros";
+	SLASH_CEROS2 = "/rollos";
+	SlashCmdList["CEROS"] = ColdEmbrace_OffSpecRoll;
 
-	SLASH_CEB1 = "/ros";
-	SLASH_CEB2 = "/rollos";
-	SlashCmdList["CEB"] = ColdEmbrace_OffSpecRoll;
+	SLASH_CERXMG1 = "/rxmg";
+	SLASH_CERXMG2 = "/rollxmg";
+	SlashCmdList["CERXMG"] = ColdEmbrace_XMogRoll;
 
-	SLASH_CEC1 = "/rc";
-	SLASH_CEC2 = "/readycheck";
-	SlashCmdList["CEC"] = ColdEmbrace_ReadyCheck;
+	SLASH_CERLD1 = "/rl";
+	SLASH_CERLD2 = "/reload";
+	SlashCmdList["CERLD"] = ReloadUI;
 
-	SLASH_CED1 = "/ml";
-	SLASH_CED2 = "/master";
-	SLASH_CED3 = "/masterloot";
-	SlashCmdList["CED"] = ColdEmbrace_MasterLoot;
+	SLASH_CERI1 = "/reset";
+	SLASH_CERI2 = "/resetinstance";
+	SLASH_CERI3 = "/resetinstances";
+	SlashCmdList["CERI"] = ResetInstances;
 
-	SLASH_CEE1 = "/gl";
-	SLASH_CEE2 = "/group";
-	SLASH_CEE3 = "/grouploot";
-	SlashCmdList["CEE"] = ColdEmbrace_GroupLoot;
+	SLASH_CEATKSTART1 = "/attackstart";
+	SlashCmdList["CEATKSTART"] = ColdEmbraceAttackStart;
 
-	SLASH_CEF1 = "/inviteraid";
-	SlashCmdList["CEF"] = ColdEmbrace_RaidInvites;
+	SLASH_CEATKSTOP1 = "/attackstop";
+	SlashCmdList["CEATKSTOP"] = ColdEmbraceAttackStop;
 
-	SLASH_CEM1 = "/invitecore";
-	SlashCmdList["CEM"] = ColdEmbrace_CoreInvites;
-
-	SLASH_CEG1 = "/rl";
-	SLASH_CEG2 = "/reload";
-	SlashCmdList["CEG"] = ReloadUI;
-
-	SLASH_CEH1 = "/reset";
-	SLASH_CEH2 = "/resetinstance";
-	SLASH_CEH3 = "/resetinstances";
-	SlashCmdList["CEH"] = ResetInstances;
-
-	SLASH_CEI1 = "/advertise";
-	SlashCmdList["CEI"] = ColdEmbraceAdvertise;
-
-	SLASH_CEJ1 = "/attackstart";
-	SlashCmdList["CEJ"] = ColdEmbraceAttackStart;
-
-	SLASH_CEK1 = "/attackstop";
-	SlashCmdList["CEK"] = ColdEmbraceAttackStop;
-
-	SLASH_CEL1 = "/celogout";
-	SlashCmdList["CEL"] = CE_LogoutRaid;
-
-	SLASH_CEV1 = "/cevc";
-	SlashCmdList["CEV"] = ColdEmbrace_VersionCheck;
+	SLASH_CEVC1 = "/cevc";
+	SlashCmdList["CEVC"] = ColdEmbrace_VersionCheck;
 	SLASH_CEVA1 = "/ceva";
 	SlashCmdList["CEVA"] = ColdEmbrace_VersionForceAnnounce;
 
@@ -113,18 +82,10 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
-	--DEFAULT_CHAT_FRAME:AddMessage("/ceclear or /clearframes - Clears all visible frames.",1,1,1);
-	--DEFAULT_CHAT_FRAME:AddMessage("/frames or /rollframes or /togglerollframes - Toggles roll frames on and off.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
-	--DEFAULT_CHAT_FRAME:AddMessage("/advertise - Will post basic guild add in world chat (type /join world).",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/rxmg or /rollxmg - Transmog roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/attackstart and /attackstop - spammable start/stop attacking command (requires Attack from spellbook General tab to be ANYWHERE on the action bar):",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("Requires Raid Lead/Assist and/or a Guild Officer rank:",0,1,0);
-	DEFAULT_CHAT_FRAME:AddMessage("/invitecore - Invite Core Raiders to group.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/inviteraid - Start raid invites for everyone.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/rc or /readycheck - Start a Ready Check.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/ml or /master or /masterloot - Change loot method to Master Loot.",1,1,1);
-	DEFAULT_CHAT_FRAME:AddMessage("/gl or /group or /grouploot - Change loot method to Group Loot.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Please report any bugs or problems caused by this addon to your guild leader.",1,1,0);
 end
 
@@ -133,12 +94,6 @@ end
 
 function ColdEmbrace_OnEvent()
 	if event == "CHAT_MSG_SYSTEM" then
-		--if strfind(arg1, "No players are AFK", 1) then
-			--SendChatMessage("No players are AFK", "RAID"); end
-		if strfind(arg1, "(.*) is not ready", 1) then
-			SendChatMessage("...group member is not ready !", "RAID"); end
-		--if strfind(arg1, "The following players are AFK", 1) then
-		--	SendChatMessage("...some group members are AFK !", "RAID"); end
 		if strfind(arg1, "You are now", 1) and strfind(arg1, "(AFK)", 1) then
 			inInstance, instanceType = IsInInstance()
 			inRaidInstance  = (instanceType == 'raid');
@@ -157,27 +112,6 @@ function ColdEmbrace_OnEvent()
 			StaticPopup_Hide("RESURRECT");
 		end
 		TargetLastTarget();
-	elseif event == "CHAT_MSG_OFFICER" then
-		if strfind(arg1, "Please do a Ready Check", 1) then
-			isLeader = IsRaidLeader() 
-			if isLeader then
-				DoReadyCheck();
-				--SendChatMessage("Starting ReadyCheck...", "OFFICER"); 
-			end end
-		if strfind(arg1, "Please change to Master Loot", 1) then
-			playerName = UnitName("Player");
-			isLeader = IsRaidLeader() 
-			if isLeader then
-				SetLootMethod("master", playerName);
-				--SendChatMessage("is now the loot master", "OFFICER"); 
-			end end
-		if strfind(arg1, "Please change to Group Loot", 1) then
-			isLeader = IsRaidLeader() 
-			if isLeader then
-				SetLootMethod("Group", "1");
-				--SendChatMessage("GroupLoot activated", "OFFICER"); 
-			end
-		end
 	elseif event == "CHAT_MSG_WHISPER" then
 		if strfind(arg1, "CE_LogoutPlease", 1) then
 			isLeader = IsRaidLeader() 
@@ -197,7 +131,7 @@ function ColdEmbrace_OnEvent()
 
 			Chronos.scheduleByName("Clear", 0.1, CE_ClearFrames);
 			Chronos.scheduleByName("Draw", 0.2, CE_DrawFrames);
-			Chronos.scheduleByName("Erase", 30, CE_ClearFrames);
+			Chronos.scheduleByName("Erase", 22, CE_ClearFrames);
 			
 		elseif strfind(arg1, "awarded", 1) then
 			CE_ClearFrames()
@@ -230,22 +164,6 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-
-function CE_LogoutRaid()
-	SendChatMessage("CE_EveryoneLogout", "RAID_WARNING");
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbraceAdvertise()
-	id, name = GetChannelName("World");
-	SendChatMessage("Cold Embrace (EU) - Looking for more players to join our guild. We offer casual raid environment and a friendly guild atmosphere. Whisper for more info." ,"CHANNEL" ,nil ,id);
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
 function ColdEmbrace_MainSpecRoll()		
 	guild = ("Cold Embrace");
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
@@ -268,6 +186,10 @@ end
 
 function ColdEmbrace_OffSpecRoll()
 	RandomRoll(1,69);
+end
+
+function ColdEmbrace_XMogRoll()
+	RandomRoll(1,50);
 end
 
 function CE_AutoRoll(id)
@@ -457,105 +379,6 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-function ColdEmbrace_ReadyCheck()
-	isLeader  = IsRaidLeader();
-	isOfficer = IsRaidOfficer();
-	if isLeader then
-		DoReadyCheck();
-	elseif isOfficer then 
-		SendChatMessage("Please do a Ready Check", "OFFICER"); 
-	else
-		DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant.");
-	end
-end
-
-function ColdEmbrace_MasterLoot()
-	isLeader  = IsRaidLeader();
-	isOfficer = IsRaidOfficer(); 
-	playerName = UnitName("Player");
-	lootmethod = GetLootMethod();
-	if lootmethod == ("master") then DEFAULT_CHAT_FRAME:AddMessage("Master Looter already set."); 
-	elseif lootmethod == ("group") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
-		if isLeader then SetLootMethod("master", playerName);
-		elseif isOfficer then SendChatMessage("Please change to Master Loot", "OFFICER"); 
-		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
-	end
-end
-
-function ColdEmbrace_GroupLoot()
-	isLeader  = IsRaidLeader();
-	isOfficer = IsRaidOfficer(); 
-	lootmethod = GetLootMethod();
-	if lootmethod == ("group") then 
-		SetLootMethod("group","1");
-		DEFAULT_CHAT_FRAME:AddMessage("Group Loot already set.");
-	elseif lootmethod == ("master") or lootmethod == ("freeforall") or lootmethod == ("roundrobin") or lootmethod == ("needbeforegreed") then
-		if isLeader then SetLootMethod("group","1");
-		elseif isOfficer then SendChatMessage("Please change to Group Loot", "OFFICER");
-		else DEFAULT_CHAT_FRAME:AddMessage("You are not a Raid Leader/Assistant."); end
-	end
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
-function ColdEmbrace_CoreInvites()	
-
-	if GetNumRaidMembers()  < 19 then 
-		SendChatMessage("Inviting Core and Casual Raiders to group!", "OFFICER");
-		SendChatMessage("Please wait before inviting manually.", "OFFICER");
-	end
-	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
-
-	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_InviteCore);
-end
-
-function ColdEmbrace_InviteCore()
-	guild = ("Cold Embrace");
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
-	playerName = UnitName("Player");
-	if guildRankIndex <= 3 then
-		for i = 1,450 do
-			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			if rankIndex <= 4 and online == 1 then
-				InviteByName(name);
-			end
-		end
-	else
-		DEFAULT_CHAT_FRAME:AddMessage("Your rank is not high enough to do that.");
-	end
-end
-
-function ColdEmbrace_RaidInvites()	
-
-	if GetNumRaidMembers()  < 29 then 
-		SendChatMessage("Inviting Trial Raiders to group!", "OFFICER");
-		SendChatMessage("Please wait before inviting manually.", "OFFICER");
-	end
-	if GetNumRaidMembers() == 0 and GetNumPartyMembers() > 0 then ConvertToRaid(); end
-
-	Chronos.scheduleByName("StartInvites", 1, ColdEmbrace_SearchInvite);
-end
-
-function ColdEmbrace_SearchInvite()
-	guild = ("Cold Embrace");
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
-	playerName = UnitName("Player");
-	if guildRankIndex <= 3 then
-		for i = 1,450 do
-			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			if rankIndex <= 6 and online == 1 then
-				InviteByName(name);
-			end
-		end
-	else
-		DEFAULT_CHAT_FRAME:AddMessage("Your rank is not high enough to do that.");
-	end
-end
-
--------------------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------------------
-
 function ColdEmbraceAttackStart()
 	if not UnitIsDeadOrGhost("Target") then 
 		if not AttackFound then
@@ -606,17 +429,6 @@ function CE_ClearFrames()
 	if NeedFrameCE and NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); ColdEmbraceMS:Hide(); end
 	if GreedFrameCE and GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); ColdEmbraceOS:Hide(); end
 	if PassFrameCE and PassFrameCE:IsVisible() then PassFrameCE:Hide(); ColdEmbracePS:Hide(); end
-end
-
-function CE_RollFramesToggle()
-	--if ColdEmbraceVariables.RollFrame < 1 then 
-	--	ColdEmbraceVariables.RollFrame = 1
-	--	DEFAULT_CHAT_FRAME:AddMessage("Roll frames enabled",0,1,0);
-	--else
-	--	ColdEmbraceVariables.RollFrame = 0
-	--	DEFAULT_CHAT_FRAME:AddMessage("Roll frames disabled",0,1,0);
-	--end
-	--return
 end
 
 function CE_ItemFrame()
@@ -728,7 +540,8 @@ function CE_PassFrame()
 		end)
 
 		local t = PassFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
+		--t:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
+		t:SetTexture("Interface\\Addons\\ColdEmbrace\\xmg_icon.tga")
 		t:SetAllPoints(PassFrameCE)
 		PassFrameCE.texture = t
 
@@ -754,6 +567,7 @@ function ColdEmbrace_OnClickOS()
 end
 
 function ColdEmbrace_OnClickPS()
+	ColdEmbrace_XMogRoll()
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end

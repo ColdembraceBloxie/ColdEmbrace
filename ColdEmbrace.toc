@@ -1,10 +1,8 @@
-## Version: 2
+## Version: 1.003
 ## Interface: 11200
 ## Title: ColdEmbrace
 ## Author: Sebben/Anachrony
 ## Notes: Official Guild Addon of 'Cold Embrace' at Turtle WoW (https://turtle-wow.org)
-## SavedVariables: 
-## SavedVariablesPerCharacter: ColdEmbraceVariables
 
 libs\Chronos\Chronos.lua
 libs\Chronos\Chronos.xml
@@ -14,6 +12,4 @@ libs\Chronos\localization.fr.lua
 libs\Chronos\localization.de.lua
 libs\Chronos\localization.lua
 
-
-extra\NoteUpdate.lua
 ColdEmbrace.xml
