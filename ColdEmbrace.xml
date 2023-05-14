@@ -21,7 +21,7 @@
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
-							<AbsDimension x="150" y="50"/>
+							<AbsDimension x="125" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -39,7 +39,25 @@
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
-							<AbsDimension x="200" y="50"/>
+							<AbsDimension x="175" y="50"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture>
+				</NormalTexture>
+				<PushedTexture>
+				</PushedTexture>
+
+			</Button>
+
+			<Button name="ColdEmbraceXmg">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="225" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -57,7 +75,7 @@
 				<Anchors>
 					<Anchor point="CENTER">
 						<Offset>
-							<AbsDimension x="250" y="50"/>
+							<AbsDimension x="275" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -74,6 +92,7 @@
 				ColdEmbrace_OnLoad();
 				ColdEmbraceMS:Hide(); 
 				ColdEmbraceOS:Hide();
+				ColdEmbraceXmg:Hide();
 				ColdEmbracePS:Hide(); 
 			</OnLoad>
 			<OnEvent>

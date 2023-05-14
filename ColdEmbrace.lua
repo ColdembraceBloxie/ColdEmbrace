@@ -419,6 +419,7 @@ function CE_DrawFrames()
 		CE_ItemFrame();
 		CE_NeedFrame(); ColdEmbraceMS:Show(); 
 		CE_GreedFrame(); ColdEmbraceOS:Show();
+		CE_XmogFrame(); ColdEmbraceXmg:Show();
 		CE_PassFrame(); ColdEmbracePS:Show();
 	--end
 end
@@ -428,6 +429,7 @@ function CE_ClearFrames()
 	if ItemFrameCE and ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE and NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); ColdEmbraceMS:Hide(); end
 	if GreedFrameCE and GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); ColdEmbraceOS:Hide(); end
+	if XmogFrameCE and XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); ColdEmbraceXmg:Hide(); end
 	if PassFrameCE and PassFrameCE:IsVisible() then PassFrameCE:Hide(); ColdEmbracePS:Hide(); end
 end
 
@@ -486,6 +488,7 @@ function CE_NeedFrame()
 			ColdEmbrace_OnClickMS();
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
 
@@ -494,7 +497,7 @@ function CE_NeedFrame()
 		t:SetAllPoints(NeedFrameCE)
 		NeedFrameCE.texture = t
 
-		NeedFrameCE:SetPoint("CENTER", ItemFrameCE,-50,-30)
+		NeedFrameCE:SetPoint("CENTER", ItemFrameCE,-75,-30)
 	end
 	NeedFrameCE:Show()
 end
@@ -511,6 +514,7 @@ function CE_GreedFrame()
 			ColdEmbrace_OnClickOS();
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
 
@@ -519,9 +523,35 @@ function CE_GreedFrame()
 		t:SetAllPoints(GreedFrameCE)
 		GreedFrameCE.texture = t
 
-		GreedFrameCE:SetPoint("CENTER", ItemFrameCE,0,-30)
+		GreedFrameCE:SetPoint("CENTER", ItemFrameCE,-25,-30)
 	end
 	GreedFrameCE:Show()
+end
+
+function CE_XmogFrame()
+	if not XmogFrameCE then
+		XmogFrameCE = CreateFrame("Button",nil,UIParent)
+		--XmogFrameCE:SetFrameStrata("BACKGROUND")
+		XmogFrameCE:SetWidth(32) 
+		XmogFrameCE:SetHeight(32) 
+		XmogFrameCE:SetMovable(true)
+
+		XmogFrameCE:SetScript("OnClick", function()
+			ColdEmbrace_OnClickXmg()
+			ColdEmbraceMS:Hide();
+			ColdEmbraceOS:Hide();
+			ColdEmbraceXmg:Hide();
+			ColdEmbracePS:Hide();
+		end)
+
+		local t = XmogFrameCE:CreateTexture(nil,"BACKGROUND")
+		t:SetTexture("Interface\\Addons\\ColdEmbrace\\xmg_icon.tga")
+		t:SetAllPoints(XmogFrameCE)
+		XmogFrameCE.texture = t
+
+		XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 25, -30)
+	end
+	XmogFrameCE:Show()
 end
 
 function CE_PassFrame()
@@ -536,16 +566,16 @@ function CE_PassFrame()
 			ColdEmbrace_OnClickPS();
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
 
 		local t = PassFrameCE:CreateTexture(nil,"BACKGROUND")
-		--t:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\xmg_icon.tga")
+		t:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
 		t:SetAllPoints(PassFrameCE)
 		PassFrameCE.texture = t
 
-		PassFrameCE:SetPoint("CENTER", ItemFrameCE, 50, -30)
+		PassFrameCE:SetPoint("CENTER", ItemFrameCE, 75, -30)
 	end
 	PassFrameCE:Show()
 end
@@ -555,6 +585,7 @@ function ColdEmbrace_OnClickMS()
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
+	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
 end
 
@@ -563,14 +594,24 @@ function ColdEmbrace_OnClickOS()
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
+	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
 end
 
-function ColdEmbrace_OnClickPS()
+function ColdEmbrace_OnClickXmg()
 	ColdEmbrace_XMogRoll()
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
+	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
+	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+end
+
+function ColdEmbrace_OnClickPS()
+	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
+	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
+	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
+	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
 end
 
