@@ -88,6 +88,7 @@ function ColdEmbrace_CA_OnEvent()
 		end--]]
 	elseif(event == "CHAT_MSG_SPELL_SELF_DAMAGE") then
 		hasFFF = ColdEmbrace_CheckForDebuff('target',"Spell_Nature_FaerieFire");
+		hasSA = ColdEmbrace_CheckForDebuff('target',"Ability_Warrior_Sunder", 5);
 		local actionStatus = "Hit";
 		local _, _, spellEffect, creature, dmg = string.find(arg1, "Your (.*) hits (.*) for (.*).");
 		
@@ -136,13 +137,15 @@ function ColdEmbrace_CA_OnEvent()
 			if UnitClassification("target") == "worldboss" then
 				SendChatMessage("Taunted: " .. target, "SAY");
 			end
-		elseif(actionStatus == "Resist" and spellEffect == "Faerie Fire") then
+		elseif((actionStatus == "Resist" or actionStatus == "Miss" or actionStatus == "Dodge" or actionStatus == "Parry") and spellEffect == "Mocking Blow") then
+			SendChatMessage("Resisted Taunt: " .. target, "SAY");
+		elseif(actionStatus == "Resist" and (spellEffect == "Faerie Fire (Feral)" or spellEffect == "Faerie Fire")) then
 			if UnitClassification("target") == "worldboss" then
-				SendChatMessage("Faerie Fire Resisted!", "SAY");
+				if not hasFFF then SendChatMessage("Faerie Fire: Resisted", "SAY"); end
 			end
-		elseif(actionStatus == "Resist" and spellEffect == "Faerie Fire (Feral)") then
+		elseif((actionStatus == "Resist" or actionStatus == "Miss" or actionStatus == "Dodge" or actionStatus == "Parry") and spellEffect == "Sunder Armor") then
 			if UnitClassification("target") == "worldboss" then
-				if not hasFFF then SendChatMessage("Faerie Fire (Feral) Resisted!", "SAY"); end
+				if not hasSA then SendChatMessage("Sunder Armor: Failed", "SAY"); end
 			end
 		elseif(actionStatus == "Resist" and (spellEffect == "Challenging Roar" or spellEffect == "Challenging Shout")) then
 			SendChatMessage("Taunt Resisted!", "SAY");
