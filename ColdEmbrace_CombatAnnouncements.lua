@@ -139,6 +139,12 @@ function ColdEmbrace_CA_OnEvent()
 			end
 		elseif((actionStatus == "Resist" or actionStatus == "Miss" or actionStatus == "Dodge" or actionStatus == "Parry") and spellEffect == "Mocking Blow") then
 			SendChatMessage("Resisted Taunt: " .. target, "SAY");
+		elseif((actionStatus == "Perform" or actionStatus == "Miss" or actionStatus == "Dodge" or actionStatus == "Parry") and spellEffect == "Mocking Blow") then
+			if UnitClassification("target") == "worldboss" then
+				SendChatMessage("Taunted: " .. target, "SAY");
+			end
+		elseif(actionStatus == "Resist" and (spellEffect == "Challenging Roar" or spellEffect == "Challenging Shout")) then
+			SendChatMessage("Taunt Resisted!", "SAY");
 		elseif(actionStatus == "Resist" and (spellEffect == "Faerie Fire (Feral)" or spellEffect == "Faerie Fire")) then
 			if UnitClassification("target") == "worldboss" then
 				if not hasFFF then SendChatMessage("Faerie Fire: Resisted", "SAY"); end
@@ -147,8 +153,6 @@ function ColdEmbrace_CA_OnEvent()
 			if UnitClassification("target") == "worldboss" then
 				if not hasSA then SendChatMessage("Sunder Armor: Failed", "SAY"); end
 			end
-		elseif(actionStatus == "Resist" and (spellEffect == "Challenging Roar" or spellEffect == "Challenging Shout")) then
-			SendChatMessage("Taunt Resisted!", "SAY");
 		elseif(actionStatus == "Unknown") then
 			VF_WA_DebugPrint("UNPARSED3: "..arg1);
 		end
