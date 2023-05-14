@@ -137,6 +137,10 @@ function ColdEmbrace_CA_OnEvent()
 			if UnitClassification("target") == "worldboss" then
 				SendChatMessage("Taunted: " .. target, "SAY");
 			end
+		elseif(actionStatus == "Perform" and spellEffect == "Expose Armor") then
+			if UnitClassification("target") == "worldboss" then
+				SendChatMessage("Armor Exposed: Warriors Stop Sundering!", "SAY");
+			end
 		elseif((actionStatus == "Resist" or actionStatus == "Miss" or actionStatus == "Dodge" or actionStatus == "Parry") and spellEffect == "Mocking Blow") then
 			SendChatMessage("Resisted Taunt: " .. target, "SAY");
 		elseif((actionStatus == "Perform" or actionStatus == "Miss" or actionStatus == "Dodge" or actionStatus == "Parry") and spellEffect == "Mocking Blow") then
