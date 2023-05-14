@@ -62,7 +62,7 @@ function ColdEmbrace_CA_OnEvent()
 		local _, _, gainWhat = string.find(arg1, "You gain (.*).");
 		if(gainWhat ~= nil) then
 			if(gainWhat == "Berserk") then
-				if GetNumRaidMembers() > 0 then SendChatMessage("Berserk activated.", "RAID"); end
+				--if GetNumRaidMembers() > 0 then SendChatMessage("Berserk activated.", "RAID"); end
 			elseif(gainWhat == "Shield Wall") then
 				if GetNumRaidMembers() > 0 then SendChatMessage("Shield Wall activated.", "RAID"); end
 			else
