@@ -58,11 +58,14 @@ end
 
 function ColdEmbrace_CA_OnEvent()
 	target = UnitName("Target");
+	icon1, name1, active1, castable1 = GetShapeshiftFormInfo(1)
 	if(event == "CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS") then
 		local _, _, gainWhat = string.find(arg1, "You gain (.*).");
 		if(gainWhat ~= nil) then
 			if(gainWhat == "Berserk") then
-				--if GetNumRaidMembers() > 0 then SendChatMessage("Berserk activated.", "RAID"); end
+				if active1 then
+					if GetNumRaidMembers() > 0 then SendChatMessage("Berserk activated.", "RAID"); end
+				end
 			elseif(gainWhat == "Shield Wall") then
 				if GetNumRaidMembers() > 0 then SendChatMessage("Shield Wall activated.", "RAID"); end
 			else
