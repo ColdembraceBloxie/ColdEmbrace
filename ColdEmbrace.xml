@@ -92,6 +92,7 @@
 			<OnLoad>
 				ColdEmbrace_OnLoad();
 				ColdEmbrace_CA_OnLoad();
+				
 				ColdEmbraceMS:Hide(); 
 				ColdEmbraceOS:Hide();
 				ColdEmbraceXmg:Hide();
