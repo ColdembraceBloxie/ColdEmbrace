@@ -13,3 +13,4 @@ libs\Chronos\localization.de.lua
 libs\Chronos\localization.lua
 
 ColdEmbrace.xml
+ColdEmbrace_CombatAnnouncements.lua

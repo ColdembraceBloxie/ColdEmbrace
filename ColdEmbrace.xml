@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
 	<Script file="ColdEmbrace.lua"/>
+	<Script file="ColdEmbrace_CombatAnnouncements.lua"/>
 	<Frame name="ColdEmbrace" parent="UIParent" movable="true" enableMouse="true" hidden="false" frameStrata="LOW">
 		<Size>
 			<AbsDimension x="1" y="1"/>
@@ -90,6 +91,7 @@
 		<Scripts>
 			<OnLoad>
 				ColdEmbrace_OnLoad();
+				ColdEmbrace_CA_OnLoad();
 				ColdEmbraceMS:Hide(); 
 				ColdEmbraceOS:Hide();
 				ColdEmbraceXmg:Hide();
@@ -97,7 +99,11 @@
 			</OnLoad>
 			<OnEvent>
 				ColdEmbrace_OnEvent();
+				ColdEmbrace_CA_OnEvent();
 			</OnEvent>
+			<OnUpdate>	
+				ColdEmbrace_CA_OnUpdate();
+			</OnUpdate>	
 		</Scripts>
 	</Frame>
 </Ui>
