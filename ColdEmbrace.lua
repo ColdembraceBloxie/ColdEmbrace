@@ -672,3 +672,39 @@ function ColdEmbrace_VersionCheck()
 	end
 	DEFAULT_CHAT_FRAME:AddMessage("addon versions summary: " .. num_issues .. ' issues')
 end
+
+
+--[[
+/cast Shackle Undead
+/run ColdEmbrace_ShackleAnnounce("Diamond")
+
+1) if a mob is not marked, it will mark it
+2) announce the shackle target
+]]
+
+local shackle_names = {"Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"}
+function ColdEmbrace_ShackleAnnounce(which_mark)
+    local shackle_idx = GetRaidTargetIndex("target")
+    if not shackle_idx and which_mark then
+        for ti, shackle_name in ipairs(shackle_names) do
+            if which_mark == shackle_name then
+                shackle_idx = ti
+                break
+            end
+        end
+        if not shackle_idx then
+            DEFAULT_CHAT_FRAME:AddMessage([[unknown mark name, should be one of "Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"]])
+        else
+            SetRaidTarget("target", shackle_idx);
+        end
+
+    end
+
+    shackle_idx = shackle_idx or GetRaidTargetIndex("target");
+    local msg = 'shackle'
+    if shackle_idx then
+        msg = msg .. ' -- ' .. shackle_names[shackle_idx]
+    end
+    msg = msg .. ' -- ' .. UnitName("target")
+    SendChatMessage(msg,"SAY",nil);
+end
