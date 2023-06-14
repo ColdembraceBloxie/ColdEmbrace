@@ -12,5 +12,9 @@ libs\Chronos\localization.fr.lua
 libs\Chronos\localization.de.lua
 libs\Chronos\localization.lua
 
+libs\AdvancedVanillaCombatLog_Helper\AdvancedVanillaCombatLog_Helper.toc
+libs\AdvancedVanillaCombatLog_Helper\RPLLCollector.xml
+libs\AdvancedVanillaCombatLog_Helper\core.lua
+
 ColdEmbrace.xml
 ColdEmbrace_CombatAnnouncements.lua

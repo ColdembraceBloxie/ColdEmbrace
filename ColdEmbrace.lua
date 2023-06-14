@@ -8,7 +8,7 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "1.03.01"
+local addon_version = "1.03.02"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
@@ -60,6 +60,9 @@ function ColdEmbrace_OnLoad()
 	SLASH_CERI3 = "/resetinstances";
 	SlashCmdList["CERI"] = ResetInstances;
 
+	SLASH_CEAR1 = "/autores";
+	SlashCmdList["CEAR"] = ColdEmbrace_AutomaticResurrection;
+
 	SLASH_CEATKSTART1 = "/attackstart";
 	SlashCmdList["CEATKSTART"] = ColdEmbraceAttackStart;
 
@@ -68,9 +71,38 @@ function ColdEmbrace_OnLoad()
 
 	SLASH_CEVC1 = "/cevc";
 	SlashCmdList["CEVC"] = ColdEmbrace_VersionCheck;
+	SLASH_CEVRA1 = "/cevra";
+	SlashCmdList["CEVRA"] = ColdEmbrace_VersionRaidAnnounce;
 	SLASH_CEVA1 = "/ceva";
 	SlashCmdList["CEVA"] = ColdEmbrace_VersionForceAnnounce;
 
+end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+function CE_FindSpell (spellName, caseinsensitive)
+	spellName = string.lower(spellName);
+	local maxSpells = 500;
+	local id = 0;
+	local searchName;
+	local subName;
+	while (id <= maxSpells) do
+		id = id + 1;
+		searchName, subName = GetSpellName(id,BOOKTYPE_SPELL); 
+		if (searchName) then
+			if (string.lower(searchName) == string.lower(spellName)) then
+				local nextName, nextSubName = GetSpellName(id+1, BOOKTYPE_SPELL);
+				if (string.lower(nextName) ~= string.lower(searchName)) then
+					break;
+				end	
+			end
+		end	
+	end
+	if (id == maxSpells) then
+		id = nil;
+	end
+	return id;
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -81,6 +113,7 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("Version: "..addon_version,1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("/rl or /reload - Reload UI.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/autores - Resurrect dead raid members.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
@@ -163,6 +196,59 @@ end
 
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
+
+local _,playerClass = UnitClass("player");
+
+if playerClass == "PRIEST" then
+    resSpell = "Resurrection";
+elseif playerClass == "SHAMAN" then
+    resSpell = "Ancestral Spirit";
+elseif playerClass == "PALADIN" then
+    resSpell = "Redemption";
+end
+
+local classcolors = { DRUID="FF7D0A", HUNTER="ABD473", MAGE="69CCF0", PALADIN="F58CBA", PRIEST="FFFFFF", ROGUE="FFF569", SHAMAN="F58CBA", WARLOCK="9482C9", WARRIOR="C79C6E" }
+
+function ColdEmbrace_AutomaticResurrection()
+	if playerClass == "PRIEST" or playerClass == "SHAMAN" or playerClass == "PALADIN" then
+		
+		if HealComm == nil then 
+			HealComm = AceLibrary("HealComm-1.0") 
+		end
+
+		local classOrder = {"PRIEST", "SHAMAN", "PALADIN", "DRUID", "WARLOCK", "MAGE", "HUNTER", "WARRIOR", "ROGUE"};
+		CastSpell(CE_FindSpell(resSpell), BOOKTYPE_SPELL); 
+
+		for c=1,table.getn(classOrder) do
+			for i = 1,40 do
+			Target = 0;
+				if GetNumRaidMembers() > 0 then
+					Target = 'raid'..i
+				elseif GetNumRaidMembers() == 0 then
+					if GetNumPartyMembers() > 0 then
+						Target = 'party'..i
+					elseif GetNumPartyMembers() == 0 then
+						Target = 'Player'
+					end
+				end	
+
+				local _, raidClass = UnitClass(Target);
+				if UnitIsDead(Target)
+				and CheckInteractDistance(Target,4)
+				and not UnitIsGhost(Target)
+				and not HealComm:UnitisResurrecting(UnitName(Target))
+				and raidClass == classOrder[c] 
+				then
+					SpellTargetUnit(Target);
+					--CastSpell(CE_FindSpell(resSpell), BOOKTYPE_SPELL); 
+				end
+			end
+		end
+	elseif playerClass == "DRUID" or playerClass == "WARLOCK" or playerClass == "MAGE" or playerClass == "HUNTER" or playerClass == "WARRIOR" or playerClass == "ROGUE" then
+		DEFAULT_CHAT_FRAME:AddMessage("nice try... dumbass",1,1,0);
+	end
+end
+
 
 function ColdEmbrace_MainSpecRoll()		
 	guild = ("Cold Embrace");
@@ -661,9 +747,9 @@ function ColdEmbrace_VersionCheck()
 
 		local extra_info = nil
 		if version == 'nil' then
-			extra_info = 'unknown'
+			extra_info = 'UNKNOWN'
 		elseif version ~= addon_version then
-			extra_info = 'outdated/different'
+			extra_info = 'OUTDATED'
 		end
 		if extra_info then
 			DEFAULT_CHAT_FRAME:AddMessage(who .. ' ' .. version .. ' ' .. extra_info)
@@ -673,38 +759,43 @@ function ColdEmbrace_VersionCheck()
 	DEFAULT_CHAT_FRAME:AddMessage("addon versions summary: " .. num_issues .. ' issues')
 end
 
+function ColdEmbrace_VersionRaidAnnounce()
+	-- TODO colorful output
 
---[[
-/cast Shackle Undead
-/run ColdEmbrace_ShackleAnnounce("Diamond")
+	local raid_members = {}
 
-1) if a mob is not marked, it will mark it
-2) announce the shackle target
-]]
+	for i = 1, GetNumRaidMembers() do
+		local unit = 'raid' .. i
+		local who = UnitName(unit)
+		table.insert(raid_members, who)
+	end
 
-local shackle_names = {"Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"}
-function ColdEmbrace_ShackleAnnounce(which_mark)
-    local shackle_idx = GetRaidTargetIndex("target")
-    if not shackle_idx and which_mark then
-        for ti, shackle_name in ipairs(shackle_names) do
-            if which_mark == shackle_name then
-                shackle_idx = ti
-                break
-            end
-        end
-        if not shackle_idx then
-            DEFAULT_CHAT_FRAME:AddMessage([[unknown mark name, should be one of "Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"]])
-        else
-            SetRaidTarget("target", shackle_idx);
-        end
+	if table.getn(raid_members) == 0 then
+		DEFAULT_CHAT_FRAME:AddMessage("no players found. are you in a raid?")
+		return
+	end
 
-    end
+	--DEFAULT_CHAT_FRAME:AddMessage("addon versions:")
+	SendChatMessage("Raid members with incorrect addon version; ", "RAID_WARNING");
+	local num_issues = 0
 
-    shackle_idx = shackle_idx or GetRaidTargetIndex("target");
-    local msg = 'shackle'
-    if shackle_idx then
-        msg = msg .. ' -- ' .. shackle_names[shackle_idx]
-    end
-    msg = msg .. ' -- ' .. UnitName("target")
-    SendChatMessage(msg,"SAY",nil);
+	table.sort(raid_members)
+
+	for i, who in ipairs(raid_members) do
+		local version = tostring(addon_version_cache[who])
+
+		local extra_info = nil
+		if version == 'nil' then
+			extra_info = 'NOT INSTALLED'
+		elseif version ~= addon_version then
+			extra_info = 'OUTDATED'
+		end
+		if extra_info then
+			--DEFAULT_CHAT_FRAME:AddMessage(who .. ' ' .. version .. ' ' .. extra_info)
+			SendChatMessage(who .. ' ' .. version .. ' ' .. extra_info, "RAID");
+			num_issues = num_issues + 1
+		end
+	end
+	--DEFAULT_CHAT_FRAME:AddMessage("addon versions summary: " .. num_issues .. ' issues')
+	SendChatMessage("addon versions summary: " .. num_issues .. ' issues', "RAID");
 end
