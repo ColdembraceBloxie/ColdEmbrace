@@ -197,6 +197,44 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
+--[[
+/cast Shackle Undead
+/run ColdEmbrace_ShackleAnnounce("Diamond")
+1) if a mob is not marked, it will mark it
+2) announce the shackle target
+]]
+
+local shackle_names = {"Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"}
+
+function ColdEmbrace_ShackleAnnounce(which_mark)
+    local shackle_idx = GetRaidTargetIndex("target")
+    if not shackle_idx and which_mark then
+        for ti, shackle_name in ipairs(shackle_names) do
+            if which_mark == shackle_name then
+                shackle_idx = ti
+                break
+            end
+        end
+        if not shackle_idx then
+            DEFAULT_CHAT_FRAME:AddMessage([[unknown mark name, should be one of "Star", "Circle", "Diamond", "Triangle", "Moon", "Square", "Cross", "Skull"]])
+        else
+            SetRaidTarget("target", shackle_idx);
+        end
+
+    end
+
+    shackle_idx = shackle_idx or GetRaidTargetIndex("target");
+    local msg = 'shackle'
+    if shackle_idx then
+        msg = msg .. ' -- ' .. shackle_names[shackle_idx]
+    end
+    msg = msg .. ' -- ' .. UnitName("target")
+    SendChatMessage(msg,"SAY",nil);
+end
+
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
 local _,playerClass = UnitClass("player");
 
 if playerClass == "PRIEST" then
@@ -249,6 +287,8 @@ function ColdEmbrace_AutomaticResurrection()
 	end
 end
 
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 
 function ColdEmbrace_MainSpecRoll()		
 	guild = ("Cold Embrace");
@@ -786,7 +826,7 @@ function ColdEmbrace_VersionRaidAnnounce()
 
 		local extra_info = nil
 		if version == 'nil' then
-			extra_info = 'NOT INSTALLED'
+			extra_info = 'DISABLED OR NOT INSTALLED'
 		elseif version ~= addon_version then
 			extra_info = 'OUTDATED'
 		end
