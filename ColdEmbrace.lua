@@ -341,7 +341,8 @@ function CE_AutoRoll(id)
 		local _, name, _, quality = GetLootRollItemInfo(id);
 
 		if string.find(name ,"Arcane Essence") 
-		or string.find(name ,"Corrupted Sand") then
+		--or string.find(name ,"Corrupted Sand") 
+		then
 
 			RollOnLoot(id, 1);
 			local _, _, _, hex = GetItemQualityColor(quality)
@@ -380,6 +381,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Word of Thawing")
 
 			or string.find(name ,"Dreamscale")
+			or string.find(name ,"Arcane Essence")
 			or string.find(name ,"Small Dream Shard")
 			or string.find(name ,"Bright Dream Shard") 
 			or string.find(name ,"Fading Dream Fragment")
