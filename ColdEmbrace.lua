@@ -8,7 +8,7 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "1.03.02"
+local addon_version = "1.03.03"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
@@ -295,7 +295,7 @@ function ColdEmbrace_MainSpecRoll()
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
 	playerName = UnitName("Player");
 	if guildName == guild then
-		for i = 1,450 do
+		for i = 1,750 do
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
 			playerName = UnitName("Player");
 			if name == playerName then
@@ -337,6 +337,18 @@ function CE_AutoRoll(id)
 		end
 		return txt
 	end
+	if inPartyInstance then
+		local _, name, _, quality = GetLootRollItemInfo(id);
+
+		if string.find(name ,"Arcane Essence") 
+		or string.find(name ,"Corrupted Sand") then
+
+			RollOnLoot(id, 1);
+			local _, _, _, hex = GetItemQualityColor(quality)
+			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto NEED "..hex..GetLootRollItemLink(id))
+			return
+		end
+	end
 	if inRaidInstance then	
 		local _, name, _, quality = GetLootRollItemInfo(id);
 
@@ -361,11 +373,16 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Hourglass Sand") 
 			 
 			or string.find(name ,"Scarab") 
-			or (string.find(name ,"Idol") and not string.find(name ,"Primal Hakkari")) 
+			or (string.find(name ,"Idol") and (not string.find(name ,"Primal Hakkari") or string.find(name ,"of the Moonfang")))
 			
 			or string.find(name ,"Ironweb Spider Silk") 
 			or string.find(name ,"Wartorn") 
 			or string.find(name ,"Word of Thawing")
+
+			or string.find(name ,"Dreamscale")
+			or string.find(name ,"Small Dream Shard")
+			or string.find(name ,"Bright Dream Shard") 
+			or string.find(name ,"Fading Dream Fragment")
 			then
 
 				if isLeader then RollOnLoot(id, 1); end
@@ -497,7 +514,17 @@ function CE_AutoRoll(id)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
 					return
 				end
+			-- Mana Potions
+		elseif string.find(name ,"Mana Potion") 
+		then
 
+			if not isLeader and
+			(class == "Rogue" or class == "Warrior") then 
+				RollOnLoot(id, 0);
+				local _, _, _, hex = GetItemQualityColor(quality)
+				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
+				return
+			end
 		end
 	end	
 end
