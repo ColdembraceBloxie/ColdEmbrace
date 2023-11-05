@@ -8,7 +8,7 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "1.03.03"
+local addon_version = "1.03.04"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
@@ -327,6 +327,9 @@ function CE_AutoRoll(id)
 	inPvPInstance   = (instanceType == 'pvp');
 	isLeader = IsRaidLeader();
 	class = UnitClass("Player");
+
+	zoneES = "Emerald Sanctum";
+	
 	
 	RollReturn = function()
 		local txt = ""
@@ -340,13 +343,16 @@ function CE_AutoRoll(id)
 	if inPartyInstance then
 		local _, name, _, quality = GetLootRollItemInfo(id);
 
-		if string.find(name ,"Arcane Essence") 
-		--or string.find(name ,"Corrupted Sand") 
+		if string.find(name ,"Dreamscale") and strfind(GetRealZoneText(), zoneES)
+		or string.find(name ,"Small Dream Shard") and strfind(GetRealZoneText(), zoneES)
+		or string.find(name ,"Bright Dream Shard") and strfind(GetRealZoneText(), zoneES)
+		or string.find(name ,"Fading Dream Fragment") and strfind(GetRealZoneText(), zoneES)
 		then
 
-			RollOnLoot(id, 1);
+			if isLeader then RollOnLoot(id, 1); end
+			if not isLeader then RollOnLoot(id, 0); end
 			local _, _, _, hex = GetItemQualityColor(quality)
-			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto NEED "..hex..GetLootRollItemLink(id))
+			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
 			return
 		end
 	end
@@ -366,7 +372,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Lava Core") 
 			or string.find(name ,"Heart of Fire") 
 			or string.find(name ,"Elemental Earth") 
-			or string.find(name ,"Elemental Air") 
+			or string.find(name ,"Elemental Air")
 			or string.find(name ,"Elemental Water")
 			or string.find(name ,"Elemental Fire")
 		
@@ -381,7 +387,6 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Word of Thawing")
 
 			or string.find(name ,"Dreamscale")
-			or string.find(name ,"Arcane Essence")
 			or string.find(name ,"Small Dream Shard")
 			or string.find(name ,"Bright Dream Shard") 
 			or string.find(name ,"Fading Dream Fragment")
@@ -461,7 +466,7 @@ function CE_AutoRoll(id)
 
 			-- Hunter
 		elseif string.find(name ,"Giantstalker's Bracers") 
-			or string.find(name ,"Giantstalker's  Belt")
+			or string.find(name ,"Giantstalker's Belt")
 			then
 
 				if not isLeader and --not class == "Hunter" and 
@@ -477,6 +482,7 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Earthfury Belt")
 			or string.find(name ,"Pauldrons of Elemental Fury") 
 			or string.find(name ,"Leggings of Elemental Fury")
+			or string.find(name ,"Girdle of Elemental Fury")
 			then
 
 				if not isLeader and --not class == "Shaman" and 
