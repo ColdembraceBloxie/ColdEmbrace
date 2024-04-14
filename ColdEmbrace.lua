@@ -2,13 +2,13 @@
 BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 -------------------------------------------------------------------------------------------------------------
 -- Official Guild Addon of 'Cold Embrace' at Turtle WoW (https://turtle-wow.org)
--- created by Sebben/Anachrony (https://github.com/Sebben7Sebben) and modified by Melbaa/Psykhe (https://github.com/melbaa)
+-- created by Sebben/Anachrony (https://github.com/Sebben7Sebben), modified by Melbaa/Psykhe (https://github.com/melbaa) and Bloxie (https://github.com/ColdembraceBloxie)
 
 --[ References ]--
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "1.03.04"
+local addon_version = "1.04.01"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
@@ -20,6 +20,7 @@ ColdEmbraceVariables = {
 
 local ItemFrameCE = nil
 local NeedFrameCE = nil
+local OffspecFrameCE = nil
 local GreedFrameCE = nil
 local PassFrameCE = nil
 
@@ -46,6 +47,10 @@ function ColdEmbrace_OnLoad()
 	SLASH_CEROS1 = "/ros";
 	SLASH_CEROS2 = "/rollos";
 	SlashCmdList["CEROS"] = ColdEmbrace_OffSpecRoll;
+
+	SLASH_CERFS1 = "/rfs";
+	SLASH_CERFS2 = "/rollfs";
+	SlashCmdList["CERFS"] = ColdEmbrace_GreedRoll;
 
 	SLASH_CERXMG1 = "/rxmg";
 	SLASH_CERXMG2 = "/rollxmg";
@@ -117,6 +122,7 @@ function ColdEmbrace_Help()
 	DEFAULT_CHAT_FRAME:AddMessage("/reset or /resetinstance or /resetinstances - Reset Instances.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rms or /rollms - Main Spec roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/ros or /rollos - Off Spec roll.",1,1,1);
+	DEFAULT_CHAT_FRAME:AddMessage("/rfs or /rollfs - Free Spec roll. (you won't pay the items price even if you win)",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/rxmg or /rollxmg - Transmog roll.",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("/attackstart and /attackstop - spammable start/stop attacking command (requires Attack from spellbook General tab to be ANYWHERE on the action bar):",1,1,1);
 	DEFAULT_CHAT_FRAME:AddMessage("Please report any bugs or problems caused by this addon to your guild leader.",1,1,0);
@@ -301,7 +307,7 @@ function ColdEmbrace_MainSpecRoll()
 			if name == playerName then
 				if officernote == ("") then RandomRoll(0,100);
 				else
-					RandomRoll(officernote*0.7,officernote*0.5+100);
+					RandomRoll(officernote,officernote*0.7+100);
 				end
 			end
 		end
@@ -311,6 +317,35 @@ function ColdEmbrace_MainSpecRoll()
 end
 
 function ColdEmbrace_OffSpecRoll()
+	guild = ("Cold Embrace");
+	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
+	playerName = UnitName("Player");
+	if guildName == guild then
+		for i = 1,750 do
+			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
+			playerName = UnitName("Player");
+			if name == playerName then
+				if officernote == ("") then RandomRoll(0,100);
+				else
+					officernotenumber = tonumber(officernote)
+					minroll = math.max(officernotenumber-100, 0)
+					maxroll = math.min(officernotenumber*0.7+70,120)
+					--DEFAULT_CHAT_FRAME:AddMessage("Officernote: ".. officernote)
+					--DEFAULT_CHAT_FRAME:AddMessage("min: ".. minroll)
+					--DEFAULT_CHAT_FRAME:AddMessage("max: ".. maxroll)
+					RandomRoll(minroll, maxroll);
+					if(minroll > maxroll) then
+						DEFAULT_CHAT_FRAME:AddMessage("Your points exceed limit, please contact an officer")
+					end
+				end
+			end
+		end
+	else 
+		RandomRoll(1,100);
+	end
+end
+
+function ColdEmbrace_GreedRoll()
 	RandomRoll(1,69);
 end
 
@@ -579,7 +614,8 @@ function CE_DrawFrames()
 	--if ColdEmbraceVariables.RollFrame > 0 then
 		CE_ItemFrame();
 		CE_NeedFrame(); ColdEmbraceMS:Show(); 
-		CE_GreedFrame(); ColdEmbraceOS:Show();
+		CE_OffspecFrame(); ColdEmbraceOS:Show();
+		CE_GreedFrame(); ColdEmbraceGreed:Show();
 		CE_XmogFrame(); ColdEmbraceXmg:Show();
 		CE_PassFrame(); ColdEmbracePS:Show();
 	--end
@@ -589,7 +625,8 @@ function CE_ClearFrames()
 	--DEFAULT_CHAT_FRAME:AddMessage("Roll frames cleared",0,1,0);
 	if ItemFrameCE and ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE and NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); ColdEmbraceMS:Hide(); end
-	if GreedFrameCE and GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); ColdEmbraceOS:Hide(); end
+	if OffspecFrameCE and OffspecFrameCE:IsVisible() then OffspecFrameCE:Hide(); ColdEmbraceOS:Hide(); end
+	if GreedFrameCE and GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); ColdEmbraceGreed:Hide(); end
 	if XmogFrameCE and XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); ColdEmbraceXmg:Hide(); end
 	if PassFrameCE and PassFrameCE:IsVisible() then PassFrameCE:Hide(); ColdEmbracePS:Hide(); end
 end
@@ -649,6 +686,7 @@ function CE_NeedFrame()
 			ColdEmbrace_OnClickMS();
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceGreed:Hide();
 			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
@@ -663,6 +701,33 @@ function CE_NeedFrame()
 	NeedFrameCE:Show()
 end
 
+function CE_OffspecFrame()
+	if not OffspecFrameCE then
+		OffspecFrameCE = CreateFrame("Button",nil,UIParent)
+		--OffspecFrameCE:SetFrameStrata("BACKGROUND")
+		OffspecFrameCE:SetWidth(32)  
+		OffspecFrameCE:SetHeight(32) 
+		OffspecFrameCE:SetMovable(true)
+
+		OffspecFrameCE:SetScript("OnClick", function()
+			ColdEmbrace_OnClickOS();
+			ColdEmbraceMS:Hide();
+			ColdEmbraceOS:Hide();
+			ColdEmbraceGreed:Hide();
+			ColdEmbraceXmg:Hide();
+			ColdEmbracePS:Hide();
+		end)
+
+		local t = OffspecFrameCE:CreateTexture(nil,"BACKGROUND")
+		t:SetTexture("Interface\\Addons\\ColdEmbrace\\os_icon.tga")
+		t:SetAllPoints(OffspecFrameCE)
+		OffspecFrameCE.texture = t
+
+		OffspecFrameCE:SetPoint("CENTER", ItemFrameCE,-25,-30)
+	end
+	OffspecFrameCE:Show()
+end
+
 function CE_GreedFrame()
 	if not GreedFrameCE then
 		GreedFrameCE = CreateFrame("Button",nil,UIParent)
@@ -672,19 +737,20 @@ function CE_GreedFrame()
 		GreedFrameCE:SetMovable(true)
 
 		GreedFrameCE:SetScript("OnClick", function()
-			ColdEmbrace_OnClickOS();
+			ColdEmbrace_OnClickGreed();
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceGreed:Hide();
 			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
 
 		local t = GreedFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\os_icon.tga")
+		t:SetTexture("Interface\\Addons\\ColdEmbrace\\osfree_icon.tga")
 		t:SetAllPoints(GreedFrameCE)
 		GreedFrameCE.texture = t
 
-		GreedFrameCE:SetPoint("CENTER", ItemFrameCE,-25,-30)
+		GreedFrameCE:SetPoint("CENTER", ItemFrameCE,25,-30)
 	end
 	GreedFrameCE:Show()
 end
@@ -701,6 +767,7 @@ function CE_XmogFrame()
 			ColdEmbrace_OnClickXmg()
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceGreed:Hide();
 			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
@@ -710,7 +777,7 @@ function CE_XmogFrame()
 		t:SetAllPoints(XmogFrameCE)
 		XmogFrameCE.texture = t
 
-		XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 25, -30)
+		XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 75, -30)
 	end
 	XmogFrameCE:Show()
 end
@@ -727,6 +794,7 @@ function CE_PassFrame()
 			ColdEmbrace_OnClickPS();
 			ColdEmbraceMS:Hide();
 			ColdEmbraceOS:Hide();
+			ColdEmbraceGreed:Hide();
 			ColdEmbraceXmg:Hide();
 			ColdEmbracePS:Hide();
 		end)
@@ -736,44 +804,41 @@ function CE_PassFrame()
 		t:SetAllPoints(PassFrameCE)
 		PassFrameCE.texture = t
 
-		PassFrameCE:SetPoint("CENTER", ItemFrameCE, 75, -30)
+		PassFrameCE:SetPoint("CENTER", ItemFrameCE, 125, -30)
 	end
 	PassFrameCE:Show()
 end
 
-function ColdEmbrace_OnClickMS()
-	ColdEmbrace_MainSpecRoll()	
+function closeFrames()
 	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
 	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
+	if OffspecFrameCE:IsVisible() then OffspecFrameCE:Hide(); end
 	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
 	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
 	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+end
+
+function ColdEmbrace_OnClickMS()
+	ColdEmbrace_MainSpecRoll()	
+	closeFrames()
 end
 
 function ColdEmbrace_OnClickOS()
 	ColdEmbrace_OffSpecRoll()	
-	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
-	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
-	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
-	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
-	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+	closeFrames()
+end
+function ColdEmbrace_OnClickGreed()
+	ColdEmbrace_GreedRoll()	
+	closeFrames()
 end
 
 function ColdEmbrace_OnClickXmg()
 	ColdEmbrace_XMogRoll()
-	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
-	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
-	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
-	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
-	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+	closeFrames()
 end
 
 function ColdEmbrace_OnClickPS()
-	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
-	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
-	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
-	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
-	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
+	closeFrames()
 end
 
 
