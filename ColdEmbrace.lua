@@ -8,7 +8,7 @@ BINDING_HEADER_COLDEMBRACE = "ColdEmbrace";
 
 local OriginalUIErrorsFrame_OnEvent;
 
-local addon_version = "1.04.01"
+local addon_version = "1.04.02"
 local addon_prefix_version = 'CEVersion'
 local addon_prefix_version_force_announce = 'CEVAnnounce'
 local addon_version_cache = {}
@@ -325,7 +325,7 @@ function ColdEmbrace_OffSpecRoll()
 			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
 			playerName = UnitName("Player");
 			if name == playerName then
-				if officernote == ("") then RandomRoll(0,100);
+				if officernote == ("") then RandomRoll(0,70);
 				else
 					officernotenumber = tonumber(officernote)
 					minroll = math.max(officernotenumber-100, 0)
