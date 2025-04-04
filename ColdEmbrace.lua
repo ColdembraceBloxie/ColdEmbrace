@@ -663,213 +663,179 @@ end
 function CE_ItemFrame()
 	if not ItemFrameCE then
 		ItemFrameCE = CreateFrame("Button", "ItemFrameCE", UIParent)
+		CreateBackdrop(ItemFrameCE)
+
 		ItemFrameCE:ClearAllPoints()
-		ItemFrameCE:SetWidth(450)
-		ItemFrameCE:SetHeight(32)
-		ItemFrameCE:SetPoint("CENTER", 195, 85)
-		ItemFrameCE.text = ItemFrameCE:CreateFontString("Status", "LOW", "GameFontNormal")
-		ItemFrameCE.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-		ItemFrameCE.text:ClearAllPoints()
-		ItemFrameCE.text:SetAllPoints(ItemFrameCE)
-		ItemFrameCE.text:SetPoint("CENTER", 0, 0)
-		ItemFrameCE.text:SetFontObject(GameFontWhite)
+		ItemFrameCE:SetWidth(256)
+		ItemFrameCE:SetHeight(96)
+		ItemFrameCE:SetPoint("CENTER", 240, 85)
+
 		ItemFrameCE:SetMovable(true)
 		ItemFrameCE:EnableMouse(true)
-		ItemFrameCE:SetScript("OnUpdate", function()
-			this.text:SetText(string.gsub(itemLink, "CE_Roll:", "", 1))
-			--ItemFrameCE:Show()
-		end)
+
 		ItemFrameCE:SetScript("OnMouseDown", function()
-			if arg1 == 'LeftButton' then
-				this:StartMoving()
-			end
+			if arg1 ~= 'LeftButton' then return end
+			this:StartMoving()
 		end)
+
 		ItemFrameCE:SetScript("OnMouseUp", function()
 			this:StopMovingOrSizing()
 			this:SetUserPlaced(true)
 		end)
-		ItemFrameCE:SetScript("OnEnter", function()
-			GameTooltip:SetOwner(ItemFrameCE, "ANCHOR_CURSOR")
+
+		ItemFrameCE.item = CreateFrame("Frame", nil, ItemFrameCE)
+		CreateBackdrop(ItemFrameCE.item)
+
+		ItemFrameCE.item:SetPoint("TOPLEFT", ItemFrameCE, "TOPLEFT", 4, -4)
+		ItemFrameCE.item:SetPoint("TOPRIGHT", ItemFrameCE, "TOPRIGHT", -4, -4)
+		ItemFrameCE.item:SetHeight(32)
+		ItemFrameCE.item:EnableMouse(true)
+		ItemFrameCE.item:SetScript("OnUpdate", function()
+			this.text:SetText(string.gsub(itemLink, "CE_Roll:", "", 1))
+		end)
+
+		ItemFrameCE.item:SetScript("OnEnter", function()
+			GameTooltip:SetOwner(ItemFrameCE.item, "ANCHOR_CURSOR")
 			if not itemLink then return end
 			local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
 			if not itemId then return end
 			GameTooltip:SetHyperlink('item:' .. itemId .. ":0:0:0")
 			GameTooltip:Show()
 		end)
-		ItemFrameCE:SetScript("OnLeave", function()
+
+		ItemFrameCE.item:SetScript("OnLeave", function()
 			GameTooltip:Hide()
 		end)
+
+		ItemFrameCE.item.text = ItemFrameCE.item:CreateFontString("Status", "LOW", "GameFontNormal")
+		ItemFrameCE.item.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+		ItemFrameCE.item.text:SetFontObject(GameFontWhite)
+		ItemFrameCE.item.text:SetAllPoints()
 	end
 	ItemFrameCE:Show();
 end
 
 function CE_NeedFrame()
 	if not NeedFrameCE then
-		NeedFrameCE = CreateFrame("Button",nil,UIParent)
-		--NeedFrameCE:SetFrameStrata("BACKGROUND")
-		NeedFrameCE:SetWidth(32)
-		NeedFrameCE:SetHeight(32)
-		NeedFrameCE:SetMovable(true)
+		NeedFrameCE = CreateFrame("Button", nil, ItemFrameCE)
+		CreateButton(NeedFrameCE)
+
+		NeedFrameCE:SetWidth(36)
+		NeedFrameCE:SetHeight(36)
 
 		NeedFrameCE:SetScript("OnClick", function()
-			ColdEmbrace_OnClickMS();
-			ColdEmbraceMS:Hide();
-			ColdEmbraceOS:Hide();
-			ColdEmbraceGreed:Hide();
-			ColdEmbraceXmg:Hide();
-			ColdEmbracePS:Hide();
+			ColdEmbrace_MainSpecRoll()
+			this:GetParent():Hide()
 		end)
 
-		local t = NeedFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\ms_icon.tga")
-		t:SetAllPoints(NeedFrameCE)
-		NeedFrameCE.texture = t
+		NeedFrameCE.texture = NeedFrameCE:CreateTexture(nil,"NORMAL")
+		NeedFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\ms_icon.tga")
+		NeedFrameCE.texture:SetPoint("CENTER", 0, 0)
+		NeedFrameCE.texture:SetWidth(24)
+		NeedFrameCE.texture:SetHeight(24)
 
-		NeedFrameCE:SetPoint("CENTER", ItemFrameCE,-75,-30)
+		NeedFrameCE:SetPoint("CENTER", ItemFrameCE, "CENTER", -96,-16)
 	end
 	NeedFrameCE:Show()
 end
 
 function CE_OffspecFrame()
 	if not OffspecFrameCE then
-		OffspecFrameCE = CreateFrame("Button",nil,UIParent)
-		--OffspecFrameCE:SetFrameStrata("BACKGROUND")
-		OffspecFrameCE:SetWidth(32)
-		OffspecFrameCE:SetHeight(32)
-		OffspecFrameCE:SetMovable(true)
+		OffspecFrameCE = CreateFrame("Button", nil, ItemFrameCE)
+		CreateButton(OffspecFrameCE)
+
+		OffspecFrameCE:SetWidth(36)
+		OffspecFrameCE:SetHeight(36)
 
 		OffspecFrameCE:SetScript("OnClick", function()
-			ColdEmbrace_OnClickOS();
-			ColdEmbraceMS:Hide();
-			ColdEmbraceOS:Hide();
-			ColdEmbraceGreed:Hide();
-			ColdEmbraceXmg:Hide();
-			ColdEmbracePS:Hide();
+			ColdEmbrace_OffSpecRoll()
+			this:GetParent():Hide()
 		end)
 
-		local t = OffspecFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\os_icon.tga")
-		t:SetAllPoints(OffspecFrameCE)
-		OffspecFrameCE.texture = t
+		OffspecFrameCE.texture = OffspecFrameCE:CreateTexture(nil, "NORMAL")
+		OffspecFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\os_icon.tga")
+		OffspecFrameCE.texture:SetPoint("CENTER", 0, 0)
+		OffspecFrameCE.texture:SetWidth(24)
+		OffspecFrameCE.texture:SetHeight(24)
 
-		OffspecFrameCE:SetPoint("CENTER", ItemFrameCE,-25,-30)
+		OffspecFrameCE:SetPoint("CENTER", ItemFrameCE, -48, -16)
 	end
 	OffspecFrameCE:Show()
 end
 
 function CE_GreedFrame()
 	if not GreedFrameCE then
-		GreedFrameCE = CreateFrame("Button",nil,UIParent)
-		--GreedFrameCE:SetFrameStrata("BACKGROUND")
-		GreedFrameCE:SetWidth(32)
-		GreedFrameCE:SetHeight(32)
+		GreedFrameCE = CreateFrame("Button", nil, ItemFrameCE)
+		CreateButton(GreedFrameCE)
+
+		GreedFrameCE:SetWidth(36)
+		GreedFrameCE:SetHeight(36)
 		GreedFrameCE:SetMovable(true)
 
 		GreedFrameCE:SetScript("OnClick", function()
-			ColdEmbrace_OnClickGreed();
-			ColdEmbraceMS:Hide();
-			ColdEmbraceOS:Hide();
-			ColdEmbraceGreed:Hide();
-			ColdEmbraceXmg:Hide();
-			ColdEmbracePS:Hide();
+			ColdEmbrace_GreedRoll()
+			this:GetParent():Hide()
 		end)
 
-		local t = GreedFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\osfree_icon.tga")
-		t:SetAllPoints(GreedFrameCE)
-		GreedFrameCE.texture = t
+		GreedFrameCE.texture = GreedFrameCE:CreateTexture(nil, "NORMAL")
+		GreedFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\osfree_icon.tga")
+		GreedFrameCE.texture:SetPoint("CENTER", 0, 0)
+		GreedFrameCE.texture:SetWidth(24)
+		GreedFrameCE.texture:SetHeight(24)
 
-		GreedFrameCE:SetPoint("CENTER", ItemFrameCE,25,-30)
+		GreedFrameCE:SetPoint("CENTER", ItemFrameCE, 0, -16)
 	end
 	GreedFrameCE:Show()
 end
 
 function CE_XmogFrame()
 	if not XmogFrameCE then
-		XmogFrameCE = CreateFrame("Button",nil,UIParent)
-		--XmogFrameCE:SetFrameStrata("BACKGROUND")
-		XmogFrameCE:SetWidth(32)
-		XmogFrameCE:SetHeight(32)
+		XmogFrameCE = CreateFrame("Button", nil, ItemFrameCE)
+		CreateButton(XmogFrameCE)
+
+		XmogFrameCE:SetWidth(36)
+		XmogFrameCE:SetHeight(36)
 		XmogFrameCE:SetMovable(true)
 
 		XmogFrameCE:SetScript("OnClick", function()
-			ColdEmbrace_OnClickXmg()
-			ColdEmbraceMS:Hide();
-			ColdEmbraceOS:Hide();
-			ColdEmbraceGreed:Hide();
-			ColdEmbraceXmg:Hide();
-			ColdEmbracePS:Hide();
+			ColdEmbrace_XMogRoll()
+			this:GetParent():Hide()
 		end)
 
-		local t = XmogFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\xmg_icon.tga")
-		t:SetAllPoints(XmogFrameCE)
-		XmogFrameCE.texture = t
+		XmogFrameCE.texture = XmogFrameCE:CreateTexture(nil, "NORMAL")
+		XmogFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\xmg_icon.tga")
+		XmogFrameCE.texture:SetPoint("CENTER", 0, 0)
+		XmogFrameCE.texture:SetWidth(24)
+		XmogFrameCE.texture:SetHeight(24)
 
-		XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 75, -30)
+		XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 48, -16)
 	end
 	XmogFrameCE:Show()
 end
 
 function CE_PassFrame()
 	if not PassFrameCE then
-		PassFrameCE = CreateFrame("Button",nil,UIParent)
-		--PassFrameCE:SetFrameStrata("BACKGROUND")
-		PassFrameCE:SetWidth(32)
-		PassFrameCE:SetHeight(32)
+		PassFrameCE = CreateFrame("Button", nil, ItemFrameCE)
+		CreateButton(PassFrameCE)
+
+		PassFrameCE:SetWidth(36)
+		PassFrameCE:SetHeight(36)
 		PassFrameCE:SetMovable(true)
 
 		PassFrameCE:SetScript("OnClick", function()
-			ColdEmbrace_OnClickPS();
-			ColdEmbraceMS:Hide();
-			ColdEmbraceOS:Hide();
-			ColdEmbraceGreed:Hide();
-			ColdEmbraceXmg:Hide();
-			ColdEmbracePS:Hide();
+			this:GetParent():Hide()
 		end)
 
-		local t = PassFrameCE:CreateTexture(nil,"BACKGROUND")
-		t:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
-		t:SetAllPoints(PassFrameCE)
-		PassFrameCE.texture = t
+		PassFrameCE.texture = PassFrameCE:CreateTexture(nil, "NORMAL")
+		PassFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
+		PassFrameCE.texture:SetPoint("CENTER", 0, 0)
+		PassFrameCE.texture:SetWidth(24)
+		PassFrameCE.texture:SetHeight(24)
 
-		PassFrameCE:SetPoint("CENTER", ItemFrameCE, 125, -30)
+		PassFrameCE:SetPoint("CENTER", ItemFrameCE, 96, -16)
 	end
 	PassFrameCE:Show()
 end
-
-function closeFrames()
-	if ItemFrameCE:IsVisible() then ItemFrameCE:Hide(); end
-	if NeedFrameCE:IsVisible() then NeedFrameCE:Hide(); end
-	if OffspecFrameCE:IsVisible() then OffspecFrameCE:Hide(); end
-	if GreedFrameCE:IsVisible() then GreedFrameCE:Hide(); end
-	if XmogFrameCE:IsVisible() then XmogFrameCE:Hide(); end
-	if PassFrameCE:IsVisible() then PassFrameCE:Hide(); end
-end
-
-function ColdEmbrace_OnClickMS()
-	ColdEmbrace_MainSpecRoll()
-	closeFrames()
-end
-
-function ColdEmbrace_OnClickOS()
-	ColdEmbrace_OffSpecRoll()
-	closeFrames()
-end
-function ColdEmbrace_OnClickGreed()
-	ColdEmbrace_GreedRoll()
-	closeFrames()
-end
-
-function ColdEmbrace_OnClickXmg()
-	ColdEmbrace_XMogRoll()
-	closeFrames()
-end
-
-function ColdEmbrace_OnClickPS()
-	closeFrames()
-end
-
 
 function ColdEmbrace_AnnounceMyVersion()
     --SendAddonMessage(addon_prefix_version, addon_version, "PARTY")
