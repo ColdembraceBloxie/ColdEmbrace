@@ -113,7 +113,13 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-function ColdEmbrace_Help()
+function ColdEmbrace_Help(msg)
+	if msg == "test" then
+		itemLink = "CE_Roll: |cffff8000|Hitem:19019:0:0:0:0:0:0:0:0|h[Thunderfury, Blessed Blade of the Windseeker]|h|r"
+		CE_DrawFrames()
+		return
+	end
+
 	DEFAULT_CHAT_FRAME:AddMessage("Thank you for downloading the Cold Embrace guild addon.",1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("Version: "..addon_version,1,1,0);
 	DEFAULT_CHAT_FRAME:AddMessage("List of usable commands:",0,1,0);
