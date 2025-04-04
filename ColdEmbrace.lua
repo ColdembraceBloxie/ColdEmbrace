@@ -27,6 +27,11 @@ local PassFrameCE = nil
 local me = UnitName('player')
 
 local function CreateBackdrop(frame)
+	if pfUI and pfUI.uf and pfUI.api then
+		pfUI.api.CreateBackdrop(frame, nil, nil, .75)
+		return
+	end
+
 	frame:SetBackdrop({
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -38,6 +43,11 @@ local function CreateBackdrop(frame)
 end
 
 local function CreateButton(frame)
+	if pfUI and pfUI.uf and pfUI.api then
+		pfUI.api.SkinButton(frame)
+		return
+	end
+
 	CreateBackdrop(frame)
 
 	frame:SetScript("OnEnter", function()
