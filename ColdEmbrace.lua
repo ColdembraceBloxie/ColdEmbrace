@@ -656,6 +656,7 @@ do -- Create Main Window
 	ItemFrameCE:SetWidth(256)
 	ItemFrameCE:SetHeight(96)
 	ItemFrameCE:SetPoint("CENTER", 240, 85)
+	ItemFrameCE:SetClampedToScreen(true)
 
 	ItemFrameCE:SetMovable(true)
 	ItemFrameCE:EnableMouse(true)
