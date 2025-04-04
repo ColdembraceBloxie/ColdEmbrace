@@ -7,123 +7,24 @@
 			<AbsDimension x="1" y="1"/>
 		</Size>
 		<Anchors>
-            <Anchor point="CENTER">
-                <Offset>
-                    <AbsDimension x="0" y="0"/>
-                </Offset>
-            </Anchor>
-        </Anchors>
-		<Frames>
-			
-			<Button name="ColdEmbraceMS">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="125" y="50"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<NormalTexture>
-				</NormalTexture>
-				<PushedTexture>
-				</PushedTexture>
-
-			</Button>
-			
-			<Button name="ColdEmbraceOS">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="175" y="50"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<NormalTexture>
-				</NormalTexture>
-				<PushedTexture>
-				</PushedTexture>
-
-			</Button>
-
-			<Button name="ColdEmbraceGreed">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="175" y="50"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<NormalTexture>
-				</NormalTexture>
-				<PushedTexture>
-				</PushedTexture>
-
-			</Button>
-
-			<Button name="ColdEmbraceXmg">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="225" y="50"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<NormalTexture>
-				</NormalTexture>
-				<PushedTexture>
-				</PushedTexture>
-
-			</Button>
-
-			<Button name="ColdEmbracePS">
-				<Size>
-					<AbsDimension x="32" y="32"/>
-				</Size>
-				<Anchors>
-					<Anchor point="CENTER">
-						<Offset>
-							<AbsDimension x="275" y="50"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<NormalTexture>
-				</NormalTexture>
-				<PushedTexture>
-				</PushedTexture>
-
-			</Button>
-
-		</Frames>
+			<Anchor point="CENTER">
+				<Offset>
+					<AbsDimension x="0" y="0"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
 		<Scripts>
 			<OnLoad>
 				ColdEmbrace_OnLoad();
 				ColdEmbrace_CA_OnLoad();
-				
-				ColdEmbraceMS:Hide(); 
-				ColdEmbraceOS:Hide();
-				ColdEmbraceXmg:Hide();
-				ColdEmbracePS:Hide(); 
 			</OnLoad>
 			<OnEvent>
 				ColdEmbrace_OnEvent();
 				ColdEmbrace_CA_OnEvent();
 			</OnEvent>
-			<OnUpdate>	
+			<OnUpdate>
 				ColdEmbrace_CA_OnUpdate();
-			</OnUpdate>	
+			</OnUpdate>
 		</Scripts>
 	</Frame>
 </Ui>
-
