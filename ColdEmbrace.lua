@@ -26,6 +26,29 @@ local PassFrameCE = nil
 
 local me = UnitName('player')
 
+local function CreateBackdrop(frame)
+	frame:SetBackdrop({
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+		tile = true, tileSize = 16, edgeSize = 12,
+		insets = { left = 2, right = 2, top = 2, bottom = 2 }
+	})
+	frame:SetBackdropColor(.2,.2,.2,.8)
+	frame:SetBackdropBorderColor(.4,.4,.4,1)
+end
+
+local function CreateButton(frame)
+	CreateBackdrop(frame)
+
+	frame:SetScript("OnEnter", function()
+		this:SetBackdropBorderColor(1,.8,.2,1)
+	end)
+
+	frame:SetScript("OnLeave", function()
+		this:SetBackdropBorderColor(.4,.4,.4,1)
+	end)
+end
+
 function ColdEmbrace_OnLoad()
 	this:RegisterEvent("RESURRECT_REQUEST")
 	this:RegisterEvent("CHAT_MSG_SYSTEM");
