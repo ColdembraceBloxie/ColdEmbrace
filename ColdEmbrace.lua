@@ -94,15 +94,15 @@ function CE_FindSpell (spellName, caseinsensitive)
 	local subName;
 	while (id <= maxSpells) do
 		id = id + 1;
-		searchName, subName = GetSpellName(id,BOOKTYPE_SPELL); 
+		searchName, subName = GetSpellName(id,BOOKTYPE_SPELL);
 		if (searchName) then
 			if (string.lower(searchName) == string.lower(spellName)) then
 				local nextName, nextSubName = GetSpellName(id+1, BOOKTYPE_SPELL);
 				if (string.lower(nextName) ~= string.lower(searchName)) then
 					break;
-				end	
+				end
 			end
-		end	
+		end
 	end
 	if (id == maxSpells) then
 		id = nil;
@@ -138,7 +138,7 @@ function ColdEmbrace_OnEvent()
 			inRaidInstance  = (instanceType == 'raid');
 			if inRaidInstance then
 				SendChatMessage("I am AFK (..offline in 20 seconds..)", "RAID");
-				Logout(); 
+				Logout();
 			end
 		end
 	elseif event == "RESURRECT_REQUEST" then
@@ -146,19 +146,19 @@ function ColdEmbrace_OnEvent()
 		TargetByName(arg1, true)
 		if GetCorpseRecoveryDelay() == 0 and UnitIsPlayer("target") and UnitIsVisible("target") and not UnitAffectingCombat("target") then
 			AcceptResurrect()
-			StaticPopup_Hide("RESURRECT_NO_TIMER"); 
+			StaticPopup_Hide("RESURRECT_NO_TIMER");
 			StaticPopup_Hide("RESURRECT_NO_SICKNESS");
 			StaticPopup_Hide("RESURRECT");
 		end
 		TargetLastTarget();
 	elseif event == "CHAT_MSG_WHISPER" then
 		if strfind(arg1, "CE_LogoutPlease", 1) then
-			isLeader = IsRaidLeader() 
+			isLeader = IsRaidLeader()
 			inInstance, instanceType = IsInInstance()
 			inRaidInstance  = (instanceType == 'raid');
 			if inRaidInstance then
 				if not isLeader then
-					Logout(); 
+					Logout();
 				end
 			else
 				SendChatMessage("Logout prevented: Player is not in the raid instance.", "RAID");
@@ -171,16 +171,16 @@ function ColdEmbrace_OnEvent()
 			Chronos.scheduleByName("Clear", 0.1, CE_ClearFrames);
 			Chronos.scheduleByName("Draw", 0.2, CE_DrawFrames);
 			Chronos.scheduleByName("Erase", 22, CE_ClearFrames);
-			
+
 		elseif strfind(arg1, "awarded", 1) then
 			CE_ClearFrames()
 		elseif strfind(arg1, "CE_EveryoneLogout", 1) then
-			isLeader = IsRaidLeader() 
+			isLeader = IsRaidLeader()
 			inInstance, instanceType = IsInInstance()
 			inRaidInstance  = (instanceType == 'raid');
 			if inRaidInstance then
 				if not isLeader then
-					Logout(); 
+					Logout();
 				end
 			else
 				SendChatMessage("Logout prevented: Player is not in the raid instance.", "RAID");
@@ -255,13 +255,13 @@ local classcolors = { DRUID="FF7D0A", HUNTER="ABD473", MAGE="69CCF0", PALADIN="F
 
 function ColdEmbrace_AutomaticResurrection()
 	if playerClass == "PRIEST" or playerClass == "SHAMAN" or playerClass == "PALADIN" then
-		
-		if HealComm == nil then 
-			HealComm = AceLibrary("HealComm-1.0") 
+
+		if HealComm == nil then
+			HealComm = AceLibrary("HealComm-1.0")
 		end
 
 		local classOrder = {"PRIEST", "SHAMAN", "PALADIN", "DRUID", "WARLOCK", "MAGE", "HUNTER", "WARRIOR", "ROGUE"};
-		CastSpell(CE_FindSpell(resSpell), BOOKTYPE_SPELL); 
+		CastSpell(CE_FindSpell(resSpell), BOOKTYPE_SPELL);
 
 		for c=1,table.getn(classOrder) do
 			for i = 1,40 do
@@ -274,17 +274,17 @@ function ColdEmbrace_AutomaticResurrection()
 					elseif GetNumPartyMembers() == 0 then
 						Target = 'Player'
 					end
-				end	
+				end
 
 				local _, raidClass = UnitClass(Target);
 				if UnitIsDead(Target)
 				and CheckInteractDistance(Target,4)
 				and not UnitIsGhost(Target)
 				and not HealComm:UnitisResurrecting(UnitName(Target))
-				and raidClass == classOrder[c] 
+				and raidClass == classOrder[c]
 				then
 					SpellTargetUnit(Target);
-					--CastSpell(CE_FindSpell(resSpell), BOOKTYPE_SPELL); 
+					--CastSpell(CE_FindSpell(resSpell), BOOKTYPE_SPELL);
 				end
 			end
 		end
@@ -296,7 +296,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-function ColdEmbrace_MainSpecRoll()		
+function ColdEmbrace_MainSpecRoll()
 	guild = ("Cold Embrace");
 	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
 	playerName = UnitName("Player");
@@ -311,7 +311,7 @@ function ColdEmbrace_MainSpecRoll()
 				end
 			end
 		end
-	else 
+	else
 		RandomRoll(1,100);
 	end
 end
@@ -340,7 +340,7 @@ function ColdEmbrace_OffSpecRoll()
 				end
 			end
 		end
-	else 
+	else
 		RandomRoll(1,100);
 	end
 end
@@ -364,8 +364,8 @@ function CE_AutoRoll(id)
 	class = UnitClass("Player");
 
 	zoneES = "Emerald Sanctum";
-	
-	
+
+
 	RollReturn = function()
 		local txt = ""
 		if isLeader then
@@ -391,39 +391,39 @@ function CE_AutoRoll(id)
 			return
 		end
 	end
-	if inRaidInstance then	
+	if inRaidInstance then
 		local _, name, _, quality = GetLootRollItemInfo(id);
 
-		if string.find(name ,"Hakkari Bijou") 
+		if string.find(name ,"Hakkari Bijou")
 		or string.find(name ,"Coin") then
 
 			RollOnLoot(id, 1);
 			local _, _, _, hex = GetItemQualityColor(quality)
 			DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto NEED "..hex..GetLootRollItemLink(id))
 			return
-		
-		elseif string.find(name ,"Blood of the Mountain") 
-			or string.find(name ,"Fiery Core") 
-			or string.find(name ,"Lava Core") 
-			or string.find(name ,"Heart of Fire") 
-			or string.find(name ,"Elemental Earth") 
+
+		elseif string.find(name ,"Blood of the Mountain")
+			or string.find(name ,"Fiery Core")
+			or string.find(name ,"Lava Core")
+			or string.find(name ,"Heart of Fire")
+			or string.find(name ,"Elemental Earth")
 			or string.find(name ,"Elemental Air")
 			or string.find(name ,"Elemental Water")
 			or string.find(name ,"Elemental Fire")
-		
-			or string.find(name ,"Elementium Ore") 
-			or string.find(name ,"Hourglass Sand") 
-			 
-			or string.find(name ,"Scarab") 
+
+			or string.find(name ,"Elementium Ore")
+			or string.find(name ,"Hourglass Sand")
+
+			or string.find(name ,"Scarab")
 			or (string.find(name ,"Idol") and (not string.find(name ,"Primal Hakkari") or string.find(name ,"of the Moonfang")))
-			
-			or string.find(name ,"Ironweb Spider Silk") 
-			or string.find(name ,"Wartorn") 
+
+			or string.find(name ,"Ironweb Spider Silk")
+			or string.find(name ,"Wartorn")
 			or string.find(name ,"Word of Thawing")
 
 			or string.find(name ,"Dreamscale")
 			or string.find(name ,"Small Dream Shard")
-			or string.find(name ,"Bright Dream Shard") 
+			or string.find(name ,"Bright Dream Shard")
 			or string.find(name ,"Fading Dream Fragment")
 			then
 
@@ -434,12 +434,12 @@ function CE_AutoRoll(id)
 				return
 
 			-- Priest
-		elseif string.find(name ,"Vambraces of Prophecy") 
-			or string.find(name ,"Girdle of Prophecy") 
+		elseif string.find(name ,"Vambraces of Prophecy")
+			or string.find(name ,"Girdle of Prophecy")
 			then
 
-				if not isLeader and --not class == "Priest" and 
-				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Priest" and
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -447,26 +447,26 @@ function CE_AutoRoll(id)
 				end
 
 			-- Mage
-		elseif string.find(name ,"Arcanist Bindings") 
+		elseif string.find(name ,"Arcanist Bindings")
 			or string.find(name ,"Arcanist Belt")
 			or string.find(name ,"Ringo's Blizzard Boots")
 			then
 
-				if not isLeader and --not class == "Mage" and 
-				(class == "Priest" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Mage" and
+				(class == "Priest" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
 					return
 				end
-			
+
 			-- Warlock
-		elseif string.find(name ,"Felheart Bracers") 
-			or string.find(name ,"Felheart Belt") 
+		elseif string.find(name ,"Felheart Bracers")
+			or string.find(name ,"Felheart Belt")
 			then
 
-				if not isLeader and --not class == "Warlock" and 
-				(class == "Mage" or class == "Priest" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Warlock" and
+				(class == "Mage" or class == "Priest" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -474,12 +474,12 @@ function CE_AutoRoll(id)
 				end
 
 			-- Rogue
-		elseif string.find(name ,"Nightslayer Bracelets") 
+		elseif string.find(name ,"Nightslayer Bracelets")
 			or string.find(name ,"Nightslayer Belt")
 			then
 
-				if not isLeader and --not class == "Rogue" and 
-				(class == "Mage" or class == "Warlock" or class == "Priest" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Rogue" and
+				(class == "Mage" or class == "Warlock" or class == "Priest" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -487,12 +487,12 @@ function CE_AutoRoll(id)
 				end
 
 			-- Druid
-		elseif string.find(name ,"Cenarion Bracers") 
+		elseif string.find(name ,"Cenarion Bracers")
 			or string.find(name ,"Cenarion Belt")
 			then
 
-				if not isLeader and --not class == "Druid" and 
-				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Priest" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Druid" and
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Priest" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -500,12 +500,12 @@ function CE_AutoRoll(id)
 				end
 
 			-- Hunter
-		elseif string.find(name ,"Giantstalker's Bracers") 
+		elseif string.find(name ,"Giantstalker's Bracers")
 			or string.find(name ,"Giantstalker's Belt")
 			then
 
-				if not isLeader and --not class == "Hunter" and 
-				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Priest" or class == "Shaman" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Hunter" and
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Priest" or class == "Shaman" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -513,15 +513,15 @@ function CE_AutoRoll(id)
 				end
 
 			-- Shaman
-		elseif string.find(name ,"Earthfury Bracers") 
+		elseif string.find(name ,"Earthfury Bracers")
 			or string.find(name ,"Earthfury Belt")
-			or string.find(name ,"Pauldrons of Elemental Fury") 
+			or string.find(name ,"Pauldrons of Elemental Fury")
 			or string.find(name ,"Leggings of Elemental Fury")
 			or string.find(name ,"Girdle of Elemental Fury")
 			then
 
-				if not isLeader and --not class == "Shaman" and 
-				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Priest" or class == "Warrior" or class == "Paladin") then 
+				if not isLeader and --not class == "Shaman" and
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Priest" or class == "Warrior" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -529,12 +529,12 @@ function CE_AutoRoll(id)
 				end
 
 			-- Warrior
-		elseif string.find(name ,"Bracers of Might") 
+		elseif string.find(name ,"Bracers of Might")
 			or string.find(name ,"Belt of Might")
 			then
 
-				if not isLeader and --not class == "Warrior" and 
-				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Priest" or class == "Paladin") then 
+				if not isLeader and --not class == "Warrior" and
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Priest" or class == "Paladin") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
@@ -542,7 +542,7 @@ function CE_AutoRoll(id)
 				end
 
 			-- Paladin
-		elseif string.find(name ,"Lawbringer Bracers") 
+		elseif string.find(name ,"Lawbringer Bracers")
 			or string.find(name ,"Lawbringer Belt")
 			or string.find(name ,"Gloves of the Redeemed Prophecy")
 			or string.find(name ,"Spaulders of the Grand Crusader")
@@ -550,58 +550,58 @@ function CE_AutoRoll(id)
 			or string.find(name ,"Leggings of the Grand Crusader")
 			then
 
-				if not isLeader and --not class == "Paladin" and 
-				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Priest") then 
+				if not isLeader and --not class == "Paladin" and
+				(class == "Mage" or class == "Warlock" or class == "Rogue" or class == "Druid" or class == "Hunter" or class == "Shaman" or class == "Warrior" or class == "Priest") then
 					RollOnLoot(id, 0);
 					local _, _, _, hex = GetItemQualityColor(quality)
 					DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
 					return
 				end
 			-- Mana Potions
-		elseif string.find(name ,"Mana Potion") 
+		elseif string.find(name ,"Mana Potion")
 		then
 
 			if not isLeader and
-			(class == "Rogue" or class == "Warrior") then 
+			(class == "Rogue" or class == "Warrior") then
 				RollOnLoot(id, 0);
 				local _, _, _, hex = GetItemQualityColor(quality)
 				DEFAULT_CHAT_FRAME:AddMessage("ColdEmbrace: Auto "..hex..RollReturn().." "..GetLootRollItemLink(id))
 				return
 			end
 		end
-	end	
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
 function ColdEmbraceAttackStart()
-	if not UnitIsDeadOrGhost("Target") then 
+	if not UnitIsDeadOrGhost("Target") then
 		if not AttackFound then
-			for i = 1,99 do 
-				if IsAttackAction(i) then 
-					AttackFound = i; 
-				end; 
-			end; 
-		end; 
+			for i = 1,99 do
+				if IsAttackAction(i) then
+					AttackFound = i;
+				end;
+			end;
+		end;
 		if AttackFound then
-			if not IsCurrentAction(AttackFound) then UseAction(AttackFound); 
+			if not IsCurrentAction(AttackFound) then UseAction(AttackFound);
 			end
 		end
 	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
 end
 
 function ColdEmbraceAttackStop()
-	if not UnitIsDeadOrGhost("Target") then 
+	if not UnitIsDeadOrGhost("Target") then
 		if not AttackFound then
-			for i = 1,99 do 
-				if IsAttackAction(i) then 
-					AttackFound = i; 
-				end; 
-			end; 
-		end; 
+			for i = 1,99 do
+				if IsAttackAction(i) then
+					AttackFound = i;
+				end;
+			end;
+		end;
 		if AttackFound then
-			if IsCurrentAction(AttackFound) then UseAction(AttackFound); 
+			if IsCurrentAction(AttackFound) then UseAction(AttackFound);
 			end
 		end
 	elseif UnitIsDeadOrGhost("Target") then ClearTarget(); end
@@ -613,7 +613,7 @@ end
 function CE_DrawFrames()
 	--if ColdEmbraceVariables.RollFrame > 0 then
 		CE_ItemFrame();
-		CE_NeedFrame(); ColdEmbraceMS:Show(); 
+		CE_NeedFrame(); ColdEmbraceMS:Show();
 		CE_OffspecFrame(); ColdEmbraceOS:Show();
 		CE_GreedFrame(); ColdEmbraceGreed:Show();
 		CE_XmogFrame(); ColdEmbraceXmg:Show();
@@ -681,7 +681,7 @@ function CE_NeedFrame()
 		NeedFrameCE:SetWidth(32)
 		NeedFrameCE:SetHeight(32)
 		NeedFrameCE:SetMovable(true)
-		
+
 		NeedFrameCE:SetScript("OnClick", function()
 			ColdEmbrace_OnClickMS();
 			ColdEmbraceMS:Hide();
@@ -705,8 +705,8 @@ function CE_OffspecFrame()
 	if not OffspecFrameCE then
 		OffspecFrameCE = CreateFrame("Button",nil,UIParent)
 		--OffspecFrameCE:SetFrameStrata("BACKGROUND")
-		OffspecFrameCE:SetWidth(32)  
-		OffspecFrameCE:SetHeight(32) 
+		OffspecFrameCE:SetWidth(32)
+		OffspecFrameCE:SetHeight(32)
 		OffspecFrameCE:SetMovable(true)
 
 		OffspecFrameCE:SetScript("OnClick", function()
@@ -732,8 +732,8 @@ function CE_GreedFrame()
 	if not GreedFrameCE then
 		GreedFrameCE = CreateFrame("Button",nil,UIParent)
 		--GreedFrameCE:SetFrameStrata("BACKGROUND")
-		GreedFrameCE:SetWidth(32)  
-		GreedFrameCE:SetHeight(32) 
+		GreedFrameCE:SetWidth(32)
+		GreedFrameCE:SetHeight(32)
 		GreedFrameCE:SetMovable(true)
 
 		GreedFrameCE:SetScript("OnClick", function()
@@ -759,8 +759,8 @@ function CE_XmogFrame()
 	if not XmogFrameCE then
 		XmogFrameCE = CreateFrame("Button",nil,UIParent)
 		--XmogFrameCE:SetFrameStrata("BACKGROUND")
-		XmogFrameCE:SetWidth(32) 
-		XmogFrameCE:SetHeight(32) 
+		XmogFrameCE:SetWidth(32)
+		XmogFrameCE:SetHeight(32)
 		XmogFrameCE:SetMovable(true)
 
 		XmogFrameCE:SetScript("OnClick", function()
@@ -786,8 +786,8 @@ function CE_PassFrame()
 	if not PassFrameCE then
 		PassFrameCE = CreateFrame("Button",nil,UIParent)
 		--PassFrameCE:SetFrameStrata("BACKGROUND")
-		PassFrameCE:SetWidth(32) 
-		PassFrameCE:SetHeight(32) 
+		PassFrameCE:SetWidth(32)
+		PassFrameCE:SetHeight(32)
 		PassFrameCE:SetMovable(true)
 
 		PassFrameCE:SetScript("OnClick", function()
@@ -819,16 +819,16 @@ function closeFrames()
 end
 
 function ColdEmbrace_OnClickMS()
-	ColdEmbrace_MainSpecRoll()	
+	ColdEmbrace_MainSpecRoll()
 	closeFrames()
 end
 
 function ColdEmbrace_OnClickOS()
-	ColdEmbrace_OffSpecRoll()	
+	ColdEmbrace_OffSpecRoll()
 	closeFrames()
 end
 function ColdEmbrace_OnClickGreed()
-	ColdEmbrace_GreedRoll()	
+	ColdEmbrace_GreedRoll()
 	closeFrames()
 end
 
