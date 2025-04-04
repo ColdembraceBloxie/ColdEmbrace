@@ -351,7 +351,7 @@ function ColdEmbrace_MainSpecRoll()
 			end
 		end
 	else
-		RandomRoll(1,100);
+		RandomRoll(0,100);
 	end
 end
 
@@ -380,7 +380,7 @@ function ColdEmbrace_OffSpecRoll()
 			end
 		end
 	else
-		RandomRoll(1,100);
+		RandomRoll(0,70);
 	end
 end
 
