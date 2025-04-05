@@ -681,7 +681,16 @@ do -- Create Main Window
 	ItemFrameCE.item:EnableMouse(true)
 	ItemFrameCE.item:SetScript("OnUpdate", function()
 		if not itemLink then return end
-		this.text:SetText(string.gsub(itemLink, "CE_Roll:", "", 1))
+
+		local name = itemLink
+		local r, g, b, rarity = 1, 1, 1, 1
+		local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
+		if itemId then name, _, rarity = GetItemInfo(itemId) end
+		if rarity then r, g, b = GetItemQualityColor(rarity) end
+
+		this.text:SetText(name)
+		this.text:SetTextColor(r,g,b,1)
+		this:SetBackdropBorderColor(r,g,b,1)
 	end)
 
 	ItemFrameCE.item:SetScript("OnEnter", function()
