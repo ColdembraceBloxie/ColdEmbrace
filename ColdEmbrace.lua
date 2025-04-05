@@ -732,7 +732,7 @@ do -- Create Main Window
 
 	ItemFrameCE.item:SetPoint("TOPLEFT", ItemFrameCE, "TOPLEFT", 4, -4)
 	ItemFrameCE.item:SetPoint("TOPRIGHT", ItemFrameCE, "TOPRIGHT", -4, -4)
-	ItemFrameCE.item:SetHeight(32)
+	ItemFrameCE.item:SetHeight(36)
 	ItemFrameCE.item:EnableMouse(true)
 	ItemFrameCE.item:SetScript("OnUpdate", function()
 		-- only set current item once
@@ -769,7 +769,7 @@ do -- Create Main Window
 	end)
 
 	ItemFrameCE.item.text = ItemFrameCE.item:CreateFontString("Status", "LOW", "GameFontNormal")
-	ItemFrameCE.item.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+	ItemFrameCE.item.text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
 	ItemFrameCE.item.text:SetAllPoints()
 end
 
