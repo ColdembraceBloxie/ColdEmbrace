@@ -62,12 +62,10 @@ local function CreateButton(frame)
 		-- legacy style (all translucent)
 		frame:SetHighlightTexture(nil)
 		frame:SetBackdrop(nil)
-		return
 	elseif ColdEmbraceVariables.Skin == 1 and pfUI and pfUI.uf and pfUI.api then
 		-- pfUI style (using pfUI API)
 		pfUI.api.SkinButton(frame)
 		frame.locked = false
-		return
 	else
 		-- default style
 		CreateBackdrop(frame)
@@ -777,15 +775,30 @@ end
 
 do -- Create MainSpec Button
 	NeedFrameCE = CreateFrame("Button", nil, ItemFrameCE)
-	CreateButton(NeedFrameCE)
-
 	NeedFrameCE:SetWidth(36)
 	NeedFrameCE:SetHeight(36)
+
+	NeedFrameCE:SetScript("OnEnter", function()
+		local min, max = unpack(GetRollStrength()[0])
+		min, max = math.floor(min), math.floor(max)
+
+		GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", -36, -4)
+		GameTooltip:SetText("MS Roll", nil, nil, nil, nil, 1)
+		GameTooltip:AddLine("Mainspec rolls are for Gearpieces which are an |cffffffffupgrade|r to the |cffffffffprimary raid specialization|r of your |cffffffffprimary character|r, Resistence Gear and Recepies for your primary Character.", .7, .7, .7, true)
+		GameTooltip:AddDoubleLine("Your Rollstrength:", min .. " - " .. max)
+		GameTooltip:Show()
+	end)
+
+	NeedFrameCE:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 
 	NeedFrameCE:SetScript("OnClick", function()
 		ColdEmbrace_MainSpecRoll()
 		this:GetParent():Hide()
 	end)
+
+	CreateButton(NeedFrameCE)
 
 	NeedFrameCE.texture = NeedFrameCE:CreateTexture(nil,"NORMAL")
 	NeedFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\ms_icon.tga")
@@ -798,15 +811,30 @@ end
 
 do -- Create OffSpec Button
 	OffspecFrameCE = CreateFrame("Button", nil, ItemFrameCE)
-	CreateButton(OffspecFrameCE)
-
 	OffspecFrameCE:SetWidth(36)
 	OffspecFrameCE:SetHeight(36)
+
+	OffspecFrameCE:SetScript("OnEnter", function()
+		local min, max = unpack(GetRollStrength()[1])
+		min, max = math.floor(min), math.floor(max)
+
+		GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", -36, -4)
+		GameTooltip:SetText("OS Roll", nil, nil, nil, nil, 1)
+		GameTooltip:AddLine("Offspec is limited to the specialisations you chose in the |cffffffffchoose-your-specs|r discord channel, PvP Gear for those Specs & Mainspec, Niche Sidegrades for your Mainspec as well as Resistence Gear and Recepies for your Alts", .7, .7, .7, true)
+		GameTooltip:AddDoubleLine("Your Rollstrength:", min .. " - " .. max)
+		GameTooltip:Show()
+	end)
+
+	OffspecFrameCE:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 
 	OffspecFrameCE:SetScript("OnClick", function()
 		ColdEmbrace_OffSpecRoll()
 		this:GetParent():Hide()
 	end)
+
+	CreateButton(OffspecFrameCE)
 
 	OffspecFrameCE.texture = OffspecFrameCE:CreateTexture(nil, "NORMAL")
 	OffspecFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\os_icon.tga")
@@ -819,16 +847,30 @@ end
 
 do -- Create OffSpec Button
 	GreedFrameCE = CreateFrame("Button", nil, ItemFrameCE)
-	CreateButton(GreedFrameCE)
-
 	GreedFrameCE:SetWidth(36)
 	GreedFrameCE:SetHeight(36)
-	GreedFrameCE:SetMovable(true)
+
+	GreedFrameCE:SetScript("OnEnter", function()
+		local min, max = unpack(GetRollStrength()[2])
+		min, max = math.floor(min), math.floor(max)
+
+		GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", -36, -4)
+		GameTooltip:SetText("OS (Free) Roll", nil, nil, nil, nil, 1)
+		GameTooltip:AddLine("'Freeroll' is for loot on characters & specialisations you |cffffffffdidn't specify in the choose-your-specs|r discord channel, and items you would like to scoop up before it gets disenchanted. |cffffffffThis is NOT meant as a greed roll for vendoring!|r", .7, .7, .7, true)
+		GameTooltip:AddDoubleLine("Your Rollstrength:", min .. " - " .. max)
+		GameTooltip:Show()
+	end)
+
+	GreedFrameCE:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 
 	GreedFrameCE:SetScript("OnClick", function()
 		ColdEmbrace_GreedRoll()
 		this:GetParent():Hide()
 	end)
+
+	CreateButton(GreedFrameCE)
 
 	GreedFrameCE.texture = GreedFrameCE:CreateTexture(nil, "NORMAL")
 	GreedFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\osfree_icon.tga")
@@ -841,16 +883,30 @@ end
 
 do -- Create XMog Button
 	XmogFrameCE = CreateFrame("Button", nil, ItemFrameCE)
-	CreateButton(XmogFrameCE)
-
 	XmogFrameCE:SetWidth(36)
 	XmogFrameCE:SetHeight(36)
-	XmogFrameCE:SetMovable(true)
+
+	XmogFrameCE:SetScript("OnEnter", function()
+		local min, max = unpack(GetRollStrength()[3])
+		min, max = math.floor(min), math.floor(max)
+
+		GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", -36, -4)
+		GameTooltip:SetText("XMog Roll", nil, nil, nil, nil, 1)
+		GameTooltip:AddLine("Roll for Transmogification, you will be expected to |cffffffffhand over the Item|r to the Person the Lootmaster specifies |cffffffffafter equipping it|r.", .7, .7, .7, true)
+		GameTooltip:AddDoubleLine("Your Rollstrength:", min .. " - " .. max)
+		GameTooltip:Show()
+	end)
+
+	XmogFrameCE:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 
 	XmogFrameCE:SetScript("OnClick", function()
 		ColdEmbrace_XMogRoll()
 		this:GetParent():Hide()
 	end)
+
+	CreateButton(XmogFrameCE)
 
 	XmogFrameCE.texture = XmogFrameCE:CreateTexture(nil, "NORMAL")
 	XmogFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\xmg_icon.tga")
@@ -863,15 +919,25 @@ end
 
 do -- Create Pass Button
 	PassFrameCE = CreateFrame("Button", nil, ItemFrameCE)
-	CreateButton(PassFrameCE)
-
 	PassFrameCE:SetWidth(36)
 	PassFrameCE:SetHeight(36)
-	PassFrameCE:SetMovable(true)
+
+	PassFrameCE:SetScript("OnEnter", function()
+		GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT", -36, -4)
+		GameTooltip:SetText("Pass Roll", nil, nil, nil, nil, 1)
+		GameTooltip:AddLine("Close the Lootwindow", .7, .7, .7, true)
+		GameTooltip:Show()
+	end)
+
+	PassFrameCE:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 
 	PassFrameCE:SetScript("OnClick", function()
 		this:GetParent():Hide()
 	end)
+
+	CreateButton(PassFrameCE)
 
 	PassFrameCE.texture = PassFrameCE:CreateTexture(nil, "NORMAL")
 	PassFrameCE.texture:SetTexture("Interface\\Addons\\ColdEmbrace\\ps_icon.tga")
