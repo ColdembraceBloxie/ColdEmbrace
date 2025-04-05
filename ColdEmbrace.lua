@@ -15,7 +15,13 @@ local addon_version_cache = {}
 
 --[ Settings ]--
 ColdEmbraceVariables = {
-	RollFrame = 1;
+	RollFrame = 1,
+
+	-- Skin:
+	--  0 = disable backdrop visuals
+	--  1 = autodetect-pfUI theme
+	--  2 = enforce blizzard theme
+	Skin = 1,
 };
 
 local ItemFrameCE = nil
@@ -26,8 +32,14 @@ local PassFrameCE = nil
 
 local me = UnitName('player')
 
+local backdrops = {}
 local function CreateBackdrop(frame)
-	if pfUI and pfUI.uf and pfUI.api then
+	if not backdrops[frame] then backdrops[frame] = true end
+
+	if ColdEmbraceVariables.Skin == 0 then
+		frame:SetBackdrop(nil)
+		return
+	elseif ColdEmbraceVariables.Skin == 1 and pfUI and pfUI.uf and pfUI.api then
 		pfUI.api.CreateBackdrop(frame, nil, true, .75)
 		return
 	end
@@ -42,8 +54,14 @@ local function CreateBackdrop(frame)
 	frame:SetBackdropBorderColor(.4,.4,.4,1)
 end
 
+local buttons = {}
 local function CreateButton(frame)
-	if pfUI and pfUI.uf and pfUI.api then
+	if not buttons[frame] then buttons[frame] = true end
+
+	if ColdEmbraceVariables.Skin == 0 then
+		frame:SetBackdrop(nil)
+		return
+	elseif ColdEmbraceVariables.Skin == 1 and pfUI and pfUI.uf and pfUI.api then
 		pfUI.api.SkinButton(frame)
 		return
 	end
@@ -59,6 +77,17 @@ local function CreateButton(frame)
 		this:SetBackdropColor(.2,.2,.2,.8)
 		this:SetBackdropBorderColor(.4,.4,.4,1)
 	end)
+end
+
+local function UpdateSkin()
+	-- update all current backdrop
+	for backdrop in pairs(backdrops) do
+		CreateBackdrop(backdrop)
+	end
+
+	for button in pairs(buttons) do
+		CreateButton(button)
+	end
 end
 
 function ColdEmbrace_OnLoad()
@@ -149,9 +178,33 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function ColdEmbrace_Help(msg)
-	if msg == "test" then
+	local _, _, cmd, args = string.find(msg, "%s?(%w+)%s?(.*)")
+
+	if strlower(cmd) == "test" then
 		itemLink = "CE_Roll: |cffff8000|Hitem:19019:0:0:0:0:0:0:0:0|h[Thunderfury, Blessed Blade of the Windseeker]|h|r"
 		CE_DrawFrames()
+		return
+	elseif strlower(cmd) == "skin" then
+		if args == "0" then
+			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Now set to |cffffcc000|r (Disable backdrop visuals)")
+			ColdEmbraceVariables.Skin = 0
+			UpdateSkin()
+		elseif args == "1" then
+			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Now set to |cffffcc001|r (Autodetect pfUI theme)")
+			ColdEmbraceVariables.Skin = 1
+			UpdateSkin()
+		elseif args == "2" then
+			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Now set to |cffffcc002|r (Enforce blizzard theme)")
+			ColdEmbraceVariables.Skin = 2
+			UpdateSkin()
+		else
+			local c = ColdEmbraceVariables.Skin
+			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Invalid skin, please choose 0, 1 or 2.")
+			DEFAULT_CHAT_FRAME:AddMessage(" 0: Disable backdrop visuals"..(c == 0 and "|cffffcc00*|r" or ""))
+			DEFAULT_CHAT_FRAME:AddMessage(" 1: Autodetect pfUI theme |cffaaaaaa(default)|r"..(c == 1 and "|cffffcc00*|r" or ""))
+			DEFAULT_CHAT_FRAME:AddMessage(" 2: Enforce blizzard theme"..(c == 2 and "|cffffcc00*|r" or ""))
+		end
+
 		return
 	end
 
@@ -232,6 +285,7 @@ function ColdEmbrace_OnEvent()
 
 	elseif event == "PLAYER_ENTERING_WORLD" then
 		ColdEmbrace_AnnounceMyVersion()
+		UpdateSkin()
 	elseif event == "CHAT_MSG_ADDON" then
 		if arg1 == addon_prefix_version then
 			ColdEmbrace_OnVersionAnnounce(arg2, arg3, arg4)
