@@ -806,7 +806,7 @@ do -- Create MainSpec Button
 	NeedFrameCE.texture:SetWidth(24)
 	NeedFrameCE.texture:SetHeight(24)
 
-	NeedFrameCE:SetPoint("CENTER", ItemFrameCE, "CENTER", -96,-16)
+	NeedFrameCE:SetPoint("CENTER", ItemFrameCE, "CENTER", -96,-20)
 end
 
 do -- Create OffSpec Button
@@ -842,7 +842,7 @@ do -- Create OffSpec Button
 	OffspecFrameCE.texture:SetWidth(24)
 	OffspecFrameCE.texture:SetHeight(24)
 
-	OffspecFrameCE:SetPoint("CENTER", ItemFrameCE, -48, -16)
+	OffspecFrameCE:SetPoint("CENTER", ItemFrameCE, -48, -20)
 end
 
 do -- Create OffSpec Button
@@ -878,7 +878,7 @@ do -- Create OffSpec Button
 	GreedFrameCE.texture:SetWidth(24)
 	GreedFrameCE.texture:SetHeight(24)
 
-	GreedFrameCE:SetPoint("CENTER", ItemFrameCE, 0, -16)
+	GreedFrameCE:SetPoint("CENTER", ItemFrameCE, 0, -20)
 end
 
 do -- Create XMog Button
@@ -914,7 +914,7 @@ do -- Create XMog Button
 	XmogFrameCE.texture:SetWidth(24)
 	XmogFrameCE.texture:SetHeight(24)
 
-	XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 48, -16)
+	XmogFrameCE:SetPoint("CENTER", ItemFrameCE, 48, -20)
 end
 
 do -- Create Pass Button
@@ -945,7 +945,7 @@ do -- Create Pass Button
 	PassFrameCE.texture:SetWidth(24)
 	PassFrameCE.texture:SetHeight(24)
 
-	PassFrameCE:SetPoint("CENTER", ItemFrameCE, 96, -16)
+	PassFrameCE:SetPoint("CENTER", ItemFrameCE, 96, -20)
 end
 
 function CE_DrawFrames()
