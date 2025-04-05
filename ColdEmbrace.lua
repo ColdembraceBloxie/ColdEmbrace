@@ -335,61 +335,59 @@ end
 -------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------
 
-function ColdEmbrace_MainSpecRoll()
-	guild = ("Cold Embrace");
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
-	playerName = UnitName("Player");
+local strength = {
+	[0] = { 0, 100 }, -- ms
+	[1] = { 0,  70 }, -- os
+	[2] = { 1,  69 }, -- greed
+	[3] = { 1,  50 }, -- xmog
+}
+
+local function GetRollStrength()
+	local guild = "Cold Embrace"
+	local guildName, guildRankName, guildRankIndex = GetGuildInfo("Player")
+	local playerName = UnitName("Player");
+
+	-- update roll strength
 	if guildName == guild then
 		for i = 1,750 do
-			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			playerName = UnitName("Player");
+			local name, _, _, _, _, _, _, officernote = GetGuildRosterInfo(i)
 			if name == playerName then
-				if officernote == ("") then RandomRoll(0,100);
-				else
-					RandomRoll(officernote,officernote*0.7+100);
+				if officernote ~= "" then
+					local points = tonumber(officernote)
+					if not points then return strength end
+
+					strength[0] = { tonumber(points), tonumber(points*0.7+100) } -- ms
+					strength[1] = { math.max(points-100, 0), math.min(points*0.7+70,120) } -- os
 				end
 			end
 		end
-	else
-		RandomRoll(0,100);
 	end
+
+	return strength
+end
+
+function ColdEmbrace_MainSpecRoll()
+	local min, max = unpack(GetRollStrength()[0])
+	RandomRoll(min, max)
 end
 
 function ColdEmbrace_OffSpecRoll()
-	guild = ("Cold Embrace");
-	guildName, guildRankName, guildRankIndex = GetGuildInfo("Player");
-	playerName = UnitName("Player");
-	if guildName == guild then
-		for i = 1,750 do
-			name, rank, rankIndex, level, class, zone, note, officernote, online, status = GetGuildRosterInfo(i);
-			playerName = UnitName("Player");
-			if name == playerName then
-				if officernote == ("") then RandomRoll(0,70);
-				else
-					officernotenumber = tonumber(officernote)
-					minroll = math.max(officernotenumber-100, 0)
-					maxroll = math.min(officernotenumber*0.7+70,120)
-					--DEFAULT_CHAT_FRAME:AddMessage("Officernote: ".. officernote)
-					--DEFAULT_CHAT_FRAME:AddMessage("min: ".. minroll)
-					--DEFAULT_CHAT_FRAME:AddMessage("max: ".. maxroll)
-					RandomRoll(minroll, maxroll);
-					if(minroll > maxroll) then
-						DEFAULT_CHAT_FRAME:AddMessage("Your points exceed limit, please contact an officer")
-					end
-				end
-			end
-		end
-	else
-		RandomRoll(0,70);
+	local min, max = unpack(GetRollStrength()[1])
+	RandomRoll(min, max)
+
+	if min > max then
+		DEFAULT_CHAT_FRAME:AddMessage("Your points exceed limit, please contact an officer")
 	end
 end
 
 function ColdEmbrace_GreedRoll()
-	RandomRoll(1,69);
+	local min, max = unpack(GetRollStrength()[2])
+	RandomRoll(min, max)
 end
 
 function ColdEmbrace_XMogRoll()
-	RandomRoll(1,50);
+	local min, max = unpack(GetRollStrength()[3])
+	RandomRoll(min, max)
 end
 
 function CE_AutoRoll(id)
