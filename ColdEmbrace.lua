@@ -710,7 +710,7 @@ do -- Create Main Window
 	CreateBackdrop(ItemFrameCE)
 
 	ItemFrameCE:ClearAllPoints()
-	ItemFrameCE:SetWidth(256)
+	ItemFrameCE:SetWidth(272)
 	ItemFrameCE:SetHeight(96)
 	ItemFrameCE:SetPoint("CENTER", 240, 85)
 	ItemFrameCE:SetClampedToScreen(true)
@@ -772,7 +772,6 @@ do -- Create Main Window
 
 	ItemFrameCE.item.text = ItemFrameCE.item:CreateFontString("Status", "LOW", "GameFontNormal")
 	ItemFrameCE.item.text:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
-	ItemFrameCE.item.text:SetFontObject(GameFontWhite)
 	ItemFrameCE.item.text:SetAllPoints()
 end
 
