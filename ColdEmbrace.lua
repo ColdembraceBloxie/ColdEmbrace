@@ -80,6 +80,9 @@ local function CreateButton(frame)
 end
 
 local function UpdateSkin()
+	-- reset current item
+	ItemFrameCE.item.itemLink = nil
+
 	-- update all current backdrop
 	for backdrop in pairs(backdrops) do
 		CreateBackdrop(backdrop)
@@ -182,6 +185,7 @@ function ColdEmbrace_Help(msg)
 
 	if strlower(cmd) == "test" then
 		itemLink = "CE_Roll: |cffff8000|Hitem:19019:0:0:0:0:0:0:0:0|h[Thunderfury, Blessed Blade of the Windseeker]|h|r"
+		ItemFrameCE.item.itemLink = nil
 		CE_DrawFrames()
 		return
 	elseif strlower(cmd) == "skin" then
@@ -261,6 +265,7 @@ function ColdEmbrace_OnEvent()
 	elseif event == "CHAT_MSG_RAID_WARNING" then
 		if strfind(arg1, "CE_Roll:", 1) then
 			itemLink = arg1
+			ItemFrameCE.item.itemLink = nil
 
 			Chronos.scheduleByName("Clear", 0.1, CE_ClearFrames);
 			Chronos.scheduleByName("Draw", 0.2, CE_DrawFrames);
@@ -734,7 +739,8 @@ do -- Create Main Window
 	ItemFrameCE.item:SetHeight(32)
 	ItemFrameCE.item:EnableMouse(true)
 	ItemFrameCE.item:SetScript("OnUpdate", function()
-		if not itemLink then return end
+		-- only set current item once
+		if not itemLink or itemLink == this.itemLink then return end
 
 		local name = itemLink
 		local r, g, b, rarity = 1, 1, 1, 1
@@ -742,16 +748,22 @@ do -- Create Main Window
 		if itemId then name, _, rarity = GetItemInfo(itemId) end
 		if rarity then r, g, b = GetItemQualityColor(rarity) end
 
+		-- update text and borders
 		this.text:SetText(name)
 		this.text:SetTextColor(r,g,b,1)
 		this:SetBackdropBorderColor(r,g,b,1)
+
+		-- save for next run
+		this.itemLink = itemLink
 	end)
 
 	ItemFrameCE.item:SetScript("OnEnter", function()
-		GameTooltip:SetOwner(ItemFrameCE.item, "ANCHOR_CURSOR")
-		if not itemLink then return end
+		if not this.itemLink then return end
+
 		local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
 		if not itemId then return end
+
+		GameTooltip:SetOwner(ItemFrameCE.item, "ANCHOR_CURSOR")
 		GameTooltip:SetHyperlink('item:' .. itemId .. ":0:0:0")
 		GameTooltip:Show()
 	end)
