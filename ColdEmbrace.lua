@@ -28,7 +28,7 @@ local me = UnitName('player')
 
 local function CreateBackdrop(frame)
 	if pfUI and pfUI.uf and pfUI.api then
-		pfUI.api.CreateBackdrop(frame, nil, nil, .75)
+		pfUI.api.CreateBackdrop(frame, nil, true, .75)
 		return
 	end
 
@@ -36,7 +36,7 @@ local function CreateBackdrop(frame)
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 		bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
 		tile = true, tileSize = 16, edgeSize = 12,
-		insets = { left = 2, right = 2, top = 2, bottom = 2 }
+		insets = { left = 4, right = 4, top = 4, bottom = 4 }
 	})
 	frame:SetBackdropColor(.2,.2,.2,.8)
 	frame:SetBackdropBorderColor(.4,.4,.4,1)
@@ -51,10 +51,12 @@ local function CreateButton(frame)
 	CreateBackdrop(frame)
 
 	frame:SetScript("OnEnter", function()
-		this:SetBackdropBorderColor(1,.8,.2,1)
+		this:SetBackdropColor(.4,.4,.4,1)
+		this:SetBackdropBorderColor(.8,.8,.8,1)
 	end)
 
 	frame:SetScript("OnLeave", function()
+		this:SetBackdropColor(.2,.2,.2,.8)
 		this:SetBackdropBorderColor(.4,.4,.4,1)
 	end)
 end
