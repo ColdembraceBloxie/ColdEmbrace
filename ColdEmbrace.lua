@@ -59,24 +59,22 @@ local function CreateButton(frame)
 	if not buttons[frame] then buttons[frame] = true end
 
 	if ColdEmbraceVariables.Skin == 0 then
+		-- legacy style (all translucent)
+		frame:SetHighlightTexture(nil)
 		frame:SetBackdrop(nil)
 		return
 	elseif ColdEmbraceVariables.Skin == 1 and pfUI and pfUI.uf and pfUI.api then
+		-- pfUI style (using pfUI API)
 		pfUI.api.SkinButton(frame)
+		frame.locked = false
 		return
+	else
+		-- default style
+		CreateBackdrop(frame)
+		frame:SetHighlightTexture("Interface\\Buttons\\CheckButtonHilight")
+		frame:GetHighlightTexture():SetAlpha(0.5)
+		frame.locked = true
 	end
-
-	CreateBackdrop(frame)
-
-	frame:SetScript("OnEnter", function()
-		this:SetBackdropColor(.4,.4,.4,1)
-		this:SetBackdropBorderColor(.8,.8,.8,1)
-	end)
-
-	frame:SetScript("OnLeave", function()
-		this:SetBackdropColor(.2,.2,.2,.8)
-		this:SetBackdropBorderColor(.4,.4,.4,1)
-	end)
 end
 
 local function UpdateSkin()
@@ -203,9 +201,9 @@ function ColdEmbrace_Help(msg)
 			UpdateSkin()
 		else
 			local c = ColdEmbraceVariables.Skin
-			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Invalid skin, please choose 0, 1 or 2.")
+			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Please choose a skin (e.g: /ce skin 2)")
 			DEFAULT_CHAT_FRAME:AddMessage(" 0: Disable backdrop visuals"..(c == 0 and "|cffffcc00*|r" or ""))
-			DEFAULT_CHAT_FRAME:AddMessage(" 1: Autodetect pfUI theme |cffaaaaaa(default)|r"..(c == 1 and "|cffffcc00*|r" or ""))
+			DEFAULT_CHAT_FRAME:AddMessage(" 1: Autodetect pfUI theme"..(c == 1 and "|cffffcc00*|r" or ""))
 			DEFAULT_CHAT_FRAME:AddMessage(" 2: Enforce blizzard theme"..(c == 2 and "|cffffcc00*|r" or ""))
 		end
 
