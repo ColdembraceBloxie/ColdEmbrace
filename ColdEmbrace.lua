@@ -735,6 +735,13 @@ do -- Create Main Window
 	ItemFrameCE.item:SetHeight(36)
 	ItemFrameCE.item:EnableMouse(true)
 	ItemFrameCE.item:SetScript("OnUpdate", function()
+		-- create font string
+		if not this.text then
+			this.text = this:CreateFontString("Status", "LOW", "GameFontNormal")
+			this.text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
+			this.text:SetAllPoints()
+		end
+
 		-- only set current item once
 		if not itemLink or itemLink == this.itemLink then return end
 
@@ -767,10 +774,6 @@ do -- Create Main Window
 	ItemFrameCE.item:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 	end)
-
-	ItemFrameCE.item.text = ItemFrameCE.item:CreateFontString("Status", "LOW", "GameFontNormal")
-	ItemFrameCE.item.text:SetFont(STANDARD_TEXT_FONT, 13, "OUTLINE")
-	ItemFrameCE.item.text:SetAllPoints()
 end
 
 do -- Create MainSpec Button
