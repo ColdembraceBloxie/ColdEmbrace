@@ -750,6 +750,7 @@ do -- Create Main Window
 		local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
 		if itemId then name, _, rarity = GetItemInfo(itemId) end
 		if rarity then r, g, b = GetItemQualityColor(rarity) end
+		if not name or not rarity then name = itemLink end
 
 		-- update text and borders
 		this.text:SetText(name)
