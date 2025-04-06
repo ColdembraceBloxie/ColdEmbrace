@@ -753,12 +753,13 @@ do -- Create Main Window
 		-- only set current item once
 		if not itemLink or itemLink == this.itemLink then return end
 
-		local name = itemLink
-		local r, g, b, rarity = 1, 1, 1, 1
-		local _, _, itemId = string.find(itemLink, "item:(%d+):%d+:%d+:%d+")
-		if itemId then name, _, rarity = GetItemInfo(itemId) end
-		if rarity then r, g, b = GetItemQualityColor(rarity) end
-		if not name or not rarity then name = itemLink end
+		-- clean up item string
+		local name = string.gsub(itemLink, "CE_Roll:", "")
+
+		-- detect item rarity color from string
+		local r, g, b = 1, 1, 1
+		local _, _, color = string.find(itemLink, "%|cff(.+)%[", 1)
+		if color then r, g, b = HexToRGB(color) end
 
 		-- update text and borders
 		this.text:SetText(name)
