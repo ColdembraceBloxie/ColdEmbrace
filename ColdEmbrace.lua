@@ -32,6 +32,14 @@ local PassFrameCE = nil
 
 local me = UnitName('player')
 
+local function HexToRGB(hex)
+	hex = string.gsub(hex, "#", "")
+	local r = (tonumber(string.sub(hex,1,2), 16) or 0) / 255
+	local g = (tonumber(string.sub(hex,3,4), 16) or 0) / 255
+	local b = (tonumber(string.sub(hex,5,6), 16) or 0) / 255
+	return r, g, b
+end
+
 local backdrops = {}
 local function CreateBackdrop(frame)
 	if not backdrops[frame] then backdrops[frame] = true end
