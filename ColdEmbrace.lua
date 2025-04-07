@@ -187,12 +187,12 @@ end
 function ColdEmbrace_Help(msg)
 	local _, _, cmd, args = string.find(msg, "%s?(%w+)%s?(.*)")
 
-	if strlower(cmd) == "test" then
+	if cmd and strlower(cmd) == "test" then
 		itemLink = "CE_Roll: |cffff8000|Hitem:19019:0:0:0:0:0:0:0:0|h[Thunderfury, Blessed Blade of the Windseeker]|h|r"
 		ItemFrameCE.item.itemLink = nil
 		CE_DrawFrames()
 		return
-	elseif strlower(cmd) == "skin" then
+	elseif cmd and strlower(cmd) == "skin" then
 		if args == "0" then
 			DEFAULT_CHAT_FRAME:AddMessage("|cffffcc00CE Skin:|r Now set to |cffffcc000|r (Disable backdrop visuals)")
 			ColdEmbraceVariables.Skin = 0
