@@ -3,6 +3,7 @@
 ## Title: ColdEmbrace
 ## Author: Sebben/Anachrony
 ## Notes: Official Guild Addon of 'Cold Embrace' at Turtle WoW (https://turtle-wow.org)
+## SavedVariables: ColdEmbraceVariables
 
 libs\Chronos\Chronos.lua
 libs\Chronos\Chronos.xml
